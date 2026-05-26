@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuizBanderas</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- SOUND BAR (fijo, visible en todas las pantallas excepto pantalla 1) -->
+  <div id="sound-bar" style="display:none">
+    <button class="sound-btn" id="btn-music" title="Música">🎵</button>
+    <button class="sound-btn" id="btn-sfx"   title="Sonidos">🔔</button>
+  </div>
+
+  <!-- TOAST de notificaciones -->
+  <div id="toast"></div>
+
+  <!-- MODAL de victoria -->
+  <div id="modal-overlay">
+    <div id="modal-box">
+      <img id="modal-flag" src="" alt="Bandera">
+      <div id="modal-country"></div>
+      <div id="modal-score">Puntaje: <span id="modal-score-val">0</span></div>
+      <div id="modal-buttons">
+        <button class="btn btn-primary" onclick="nextFlag()">Siguiente Bandera &#9654;</button>
+        <button class="btn btn-outline" onclick="document.getElementById('modal-overlay').classList.remove('visible'); goScreen(4)">Ver Etapas</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== PANTALLA 1: Bienvenida ========== -->
+  <div id="screen1" class="screen active">
+    <div class="title">&#127757; QuizBanderas</div>
+    <div class="subtitle">&#191;Conoces las banderas del mundo?</div>
+
+    <button class="btn btn-primary"
+            onclick="goScreen(2)"
+            style="font-size:30px; padding:16px 60px; margin-top:8px;">
+      INICIAR JUEGO
+    </button>
+
+    <div style="display:flex; gap:16px; margin-top:8px;">
+      <button class="sound-btn" id="s1-music" onclick="toggleMusic()">&#127925; Música: ON</button>
+      <button class="sound-btn" id="s1-sfx"   onclick="toggleSFX()">&#128276; Sonidos: ON</button>
+    </div>
+
+    <img id="logo-img" src="" alt="Logo">
+  </div>
+
+  <!-- ========== PANTALLA 2: Menú principal ========== -->
+  <div id="screen2" class="screen">
+    <h2>&#127942; MENÚ PRINCIPAL</h2>
+    <button class="btn btn-primary"   onclick="startGame()" style="min-width:240px;">&#127918; JUGAR</button>
+    <button class="btn btn-secondary" onclick="goScreen(4)" style="min-width:240px;">&#128203; ETAPAS</button>
+    <button class="btn btn-outline"   onclick="goScreen(1)" style="min-width:240px;">&#128682; SALIR</button>
+  </div>
+
+  <!-- ========== PANTALLA 3: Juego ========== -->
+  <div id="screen3" class="screen">
+
+    <!-- Barra de puntaje -->
+    <div id="score-bar">
+      <div>
+        <div id="score-label">PUNTAJE</div>
+        <div id="score-display">1000</div>
+      </div>
+    </div>
+
+    <!-- Bandera con bloques encima -->
+    <div id="flag-area">
+      <div id="flag-wrapper">
+        <img id="flag-img" src="" alt="Bandera">
+        <div id="blocks-overlay"></div>
+      </div>
+    </div>
+
+    <!-- Botones STOP y Quiero Adivinar -->
+    <div id="action-row">
+      <button id="btn-stop"  onclick="pressStop()">&#128721; STOP</button>
+      <button id="btn-guess" onclick="enterGuessMode()">&#129300; Quiero Adivinar</button>
+    </div>
+
+    <!-- Popup modal pregunta SÍ / NO -->
+    <div id="letter-panel">
+      <div id="letter-popup">
+        <div id="revealed-letter">A</div>
+        <div id="letter-question">&#191;Esta letra pertenece al nombre del país?</div>
+        <div id="yesno-row">
+          <button class="btn-yesno" id="btn-yes" onclick="answerYesNo(true)">&#9989; SÍ</button>
+          <button class="btn-yesno" id="btn-no"  onclick="answerYesNo(false)">&#10060; NO</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cuadros del nombre del país -->
+    <div id="name-area">
+      <div id="name-boxes"></div>
+      <div id="discarded-letters"></div>
+    </div>
+
+    <!-- Teclado QWERTY (modo adivinar) -->
+    <div id="qwerty-panel">
+      <div class="qwerty-row" id="qrow1"></div>
+      <div class="qwerty-row" id="qrow2"></div>
+      <div class="qwerty-row" id="qrow3"></div>
+    </div>
+
+  </div>
+
+  <!-- ========== PANTALLA 4: Resumen etapas ========== -->
+  <div id="screen4" class="screen">
+    <h2>&#128203; RESUMEN ETAPAS</h2>
+
+    <div id="continent-nav">
+      <button class="nav-arrow" onclick="changeContinent(-1)">&#9664;</button>
+      <div id="continent-name">AMERICA</div>
+      <button class="nav-arrow" onclick="changeContinent(1)">&#9654;</button>
+    </div>
+
+    <div id="countries-list"></div>
+
+    <div id="screen4-buttons">
+      <button class="btn btn-primary" onclick="startGame()">&#127918; Jugar Siguiente Bandera</button>
+      <button class="btn btn-outline" onclick="goScreen(2)">&#8617; Salir</button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="images_data.js"></script>
+  <script src="game.js"></script>
+
+</body>
+</html>
