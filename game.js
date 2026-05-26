@@ -175,8 +175,9 @@ function buildBlocks() {
   blockLetters = pool;
 
   blockVisible = new Array(30).fill(false);
-  // Un bloque aleatorio comienza descubierto
-  blockVisible[Math.floor(Math.random() * 30)] = true;
+  // El bloque inicial descubierto es siempre el bloque vacío (null)
+  const nullIdx = blockLetters.indexOf(null);
+  blockVisible[nullIdx] = true;
 
   renderBlocks();
 }
