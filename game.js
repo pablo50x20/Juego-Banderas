@@ -2,36 +2,189 @@
 const CONTINENTS = ['AMERICA', 'EUROPA'];
 
 const COUNTRIES = {
-  AMERICA: ['ARGENTINA', 'BRASIL', 'CHILE', 'COLOMBIA', 'MEXICO'],
-  EUROPA:  ['ALEMANIA', 'ESPANA', 'FRANCIA', 'INGLATERRA', 'ITALIA']
+  AMERICA: [
+    'ANTIGUA_Y_BARBUDA','ARGENTINA','BAHAMAS','BARBADOS','BELICE','BOLIVIA',
+    'BRASIL','CANADA','CHILE','COLOMBIA','COSTA_RICA','CUBA','DOMINICA',
+    'ECUADOR','EL_SALVADOR','ESTADOS_UNIDOS','GRANADA','GUATEMALA','HAITI',
+    'HONDURAS','JAMAICA','MEXICO','NICARAGUA','PANAMA','PARAGUAY','PERU',
+    'REPUBLICA_DOMINICANA','SAN_CRISTOBAL_Y_NIEVES','SAN_VICENTE_Y_LAS_GRANADINAS',
+    'SANTA_LUCIA','TRINIDAD_Y_TOBAGO','URUGUAY','VENEZUELA'
+  ],
+  EUROPA: [
+    'ALBANIA','ALEMANIA','ANDORRA','AUSTRIA','BELGICA','BIELORRUSIA',
+    'BOSNIA_Y_HERZEGOVINA','BULGARIA','CIUDAD_DEL_VATICANO','CROACIA',
+    'DINAMARCA','ESCOCIA','ESLOVAQUIA','ESLOVENIA','ESPANA','ESTONIA',
+    'FINLANDIA','FRANCIA','GALES','GRECIA','HUNGRIA','INGLATERRA','IRLANDA',
+    'ISLANDIA','ITALIA','LETONIA','LIECHTENSTEIN','LITUANIA','LUXEMBURGO',
+    'MONACO','MACEDONIA_DEL_NORTE','MALTA','MOLDAVIA','MONTENEGRO','NORUEGA',
+    'PAISES_BAJOS','POLONIA','PORTUGAL','REPUBLICA_CHECA','RUMANIA','RUSIA',
+    'SAN_MARINO','SERBIA','SUECIA','SUIZA','UCRANIA'
+  ]
 };
 
-// Nombres con caracteres especiales (para modal y pantalla 4)
 const DISPLAY_NAMES = {
-  ARGENTINA:  'ARGENTINA',
-  BRASIL:     'BRASIL',
-  CHILE:      'CHILE',
-  COLOMBIA:   'COLOMBIA',
-  MEXICO:     'MÉXICO',
-  ALEMANIA:   'ALEMANIA',
-  ESPANA:     'ESPAÑA',
-  FRANCIA:    'FRANCIA',
-  INGLATERRA: 'INGLATERRA',
-  ITALIA:     'ITALIA'
+  ANTIGUA_Y_BARBUDA:            'ANTIGUA Y BARBUDA',
+  ARGENTINA:                    'ARGENTINA',
+  BAHAMAS:                      'BAHAMAS',
+  BARBADOS:                     'BARBADOS',
+  BELICE:                       'BELICE',
+  BOLIVIA:                      'BOLIVIA',
+  BRASIL:                       'BRASIL',
+  CANADA:                       'CANADÁ',
+  CHILE:                        'CHILE',
+  COLOMBIA:                     'COLOMBIA',
+  COSTA_RICA:                   'COSTA RICA',
+  CUBA:                         'CUBA',
+  DOMINICA:                     'DOMÍNICA',
+  ECUADOR:                      'ECUADOR',
+  EL_SALVADOR:                  'EL SALVADOR',
+  ESTADOS_UNIDOS:               'ESTADOS UNIDOS',
+  GRANADA:                      'GRANADA',
+  GUATEMALA:                    'GUATEMALA',
+  HAITI:                        'HAITÍ',
+  HONDURAS:                     'HONDURAS',
+  JAMAICA:                      'JAMAICA',
+  MEXICO:                       'MÉXICO',
+  NICARAGUA:                    'NICARAGUA',
+  PANAMA:                       'PANAMÁ',
+  PARAGUAY:                     'PARAGUAY',
+  PERU:                         'PERÚ',
+  REPUBLICA_DOMINICANA:         'REPÚBLICA DOMINICANA',
+  SAN_CRISTOBAL_Y_NIEVES:       'SAN CRISTÓBAL Y NIEVES',
+  SAN_VICENTE_Y_LAS_GRANADINAS: 'SAN VICENTE Y LAS GRANADINAS',
+  SANTA_LUCIA:                  'SANTA LUCÍA',
+  TRINIDAD_Y_TOBAGO:            'TRINIDAD Y TOBAGO',
+  URUGUAY:                      'URUGUAY',
+  VENEZUELA:                    'VENEZUELA',
+  ALBANIA:                      'ALBANIA',
+  ALEMANIA:                     'ALEMANIA',
+  ANDORRA:                      'ANDORRA',
+  AUSTRIA:                      'AUSTRIA',
+  BELGICA:                      'BÉLGICA',
+  BIELORRUSIA:                  'BIELORRUSIA',
+  BOSNIA_Y_HERZEGOVINA:         'BOSNIA Y HERZEGOVINA',
+  BULGARIA:                     'BULGARIA',
+  CIUDAD_DEL_VATICANO:          'CIUDAD DEL VATICANO',
+  CROACIA:                      'CROACIA',
+  DINAMARCA:                    'DINAMARCA',
+  ESCOCIA:                      'ESCOCIA',
+  ESLOVAQUIA:                   'ESLOVAQUIA',
+  ESLOVENIA:                    'ESLOVENIA',
+  ESPANA:                       'ESPAÑA',
+  ESTONIA:                      'ESTONIA',
+  FINLANDIA:                    'FINLANDIA',
+  FRANCIA:                      'FRANCIA',
+  GALES:                        'GALES',
+  GRECIA:                       'GRECIA',
+  HUNGRIA:                      'HUNGRÍA',
+  INGLATERRA:                   'INGLATERRA',
+  IRLANDA:                      'IRLANDA',
+  ISLANDIA:                     'ISLANDIA',
+  ITALIA:                       'ITALIA',
+  LETONIA:                      'LETONIA',
+  LIECHTENSTEIN:                'LIECHTENSTEIN',
+  LITUANIA:                     'LITUANIA',
+  LUXEMBURGO:                   'LUXEMBURGO',
+  MONACO:                       'MÓNACO',
+  MACEDONIA_DEL_NORTE:          'MACEDONIA DEL NORTE',
+  MALTA:                        'MALTA',
+  MOLDAVIA:                     'MOLDAVIA',
+  MONTENEGRO:                   'MONTENEGRO',
+  NORUEGA:                      'NORUEGA',
+  PAISES_BAJOS:                 'PAÍSES BAJOS',
+  POLONIA:                      'POLONIA',
+  PORTUGAL:                     'PORTUGAL',
+  REPUBLICA_CHECA:              'REPÚBLICA CHECA',
+  RUMANIA:                      'RUMANIA',
+  RUSIA:                        'RUSIA',
+  SAN_MARINO:                   'SAN MARINO',
+  SERBIA:                       'SERBIA',
+  SUECIA:                       'SUECIA',
+  SUIZA:                        'SUIZA',
+  UCRANIA:                      'UCRANIA',
 };
 
 // Nombres normalizados para lógica del juego (sin tildes, Ñ se mantiene)
 const GAME_NAMES = {
-  ARGENTINA:  'ARGENTINA',
-  BRASIL:     'BRASIL',
-  CHILE:      'CHILE',
-  COLOMBIA:   'COLOMBIA',
-  MEXICO:     'MEXICO',
-  ALEMANIA:   'ALEMANIA',
-  ESPANA:     'ESPAÑA',
-  FRANCIA:    'FRANCIA',
-  INGLATERRA: 'INGLATERRA',
-  ITALIA:     'ITALIA'
+  ANTIGUA_Y_BARBUDA:            'ANTIGUA Y BARBUDA',
+  ARGENTINA:                    'ARGENTINA',
+  BAHAMAS:                      'BAHAMAS',
+  BARBADOS:                     'BARBADOS',
+  BELICE:                       'BELICE',
+  BOLIVIA:                      'BOLIVIA',
+  BRASIL:                       'BRASIL',
+  CANADA:                       'CANADA',
+  CHILE:                        'CHILE',
+  COLOMBIA:                     'COLOMBIA',
+  COSTA_RICA:                   'COSTA RICA',
+  CUBA:                         'CUBA',
+  DOMINICA:                     'DOMINICA',
+  ECUADOR:                      'ECUADOR',
+  EL_SALVADOR:                  'EL SALVADOR',
+  ESTADOS_UNIDOS:               'ESTADOS UNIDOS',
+  GRANADA:                      'GRANADA',
+  GUATEMALA:                    'GUATEMALA',
+  HAITI:                        'HAITI',
+  HONDURAS:                     'HONDURAS',
+  JAMAICA:                      'JAMAICA',
+  MEXICO:                       'MEXICO',
+  NICARAGUA:                    'NICARAGUA',
+  PANAMA:                       'PANAMA',
+  PARAGUAY:                     'PARAGUAY',
+  PERU:                         'PERU',
+  REPUBLICA_DOMINICANA:         'REPUBLICA DOMINICANA',
+  SAN_CRISTOBAL_Y_NIEVES:       'SAN CRISTOBAL Y NIEVES',
+  SAN_VICENTE_Y_LAS_GRANADINAS: 'SAN VICENTE Y LAS GRANADINAS',
+  SANTA_LUCIA:                  'SANTA LUCIA',
+  TRINIDAD_Y_TOBAGO:            'TRINIDAD Y TOBAGO',
+  URUGUAY:                      'URUGUAY',
+  VENEZUELA:                    'VENEZUELA',
+  ALBANIA:                      'ALBANIA',
+  ALEMANIA:                     'ALEMANIA',
+  ANDORRA:                      'ANDORRA',
+  AUSTRIA:                      'AUSTRIA',
+  BELGICA:                      'BELGICA',
+  BIELORRUSIA:                  'BIELORRUSIA',
+  BOSNIA_Y_HERZEGOVINA:         'BOSNIA Y HERZEGOVINA',
+  BULGARIA:                     'BULGARIA',
+  CIUDAD_DEL_VATICANO:          'CIUDAD DEL VATICANO',
+  CROACIA:                      'CROACIA',
+  DINAMARCA:                    'DINAMARCA',
+  ESCOCIA:                      'ESCOCIA',
+  ESLOVAQUIA:                   'ESLOVAQUIA',
+  ESLOVENIA:                    'ESLOVENIA',
+  ESPANA:                       'ESPAÑA',
+  ESTONIA:                      'ESTONIA',
+  FINLANDIA:                    'FINLANDIA',
+  FRANCIA:                      'FRANCIA',
+  GALES:                        'GALES',
+  GRECIA:                       'GRECIA',
+  HUNGRIA:                      'HUNGRIA',
+  INGLATERRA:                   'INGLATERRA',
+  IRLANDA:                      'IRLANDA',
+  ISLANDIA:                     'ISLANDIA',
+  ITALIA:                       'ITALIA',
+  LETONIA:                      'LETONIA',
+  LIECHTENSTEIN:                'LIECHTENSTEIN',
+  LITUANIA:                     'LITUANIA',
+  LUXEMBURGO:                   'LUXEMBURGO',
+  MONACO:                       'MONACO',
+  MACEDONIA_DEL_NORTE:          'MACEDONIA DEL NORTE',
+  MALTA:                        'MALTA',
+  MOLDAVIA:                     'MOLDAVIA',
+  MONTENEGRO:                   'MONTENEGRO',
+  NORUEGA:                      'NORUEGA',
+  PAISES_BAJOS:                 'PAISES BAJOS',
+  POLONIA:                      'POLONIA',
+  PORTUGAL:                     'PORTUGAL',
+  REPUBLICA_CHECA:              'REPUBLICA CHECA',
+  RUMANIA:                      'RUMANIA',
+  RUSIA:                        'RUSIA',
+  SAN_MARINO:                   'SAN MARINO',
+  SERBIA:                       'SERBIA',
+  SUECIA:                       'SUECIA',
+  SUIZA:                        'SUIZA',
+  UCRANIA:                      'UCRANIA',
 };
 
 // Alfabeto español (27 letras)
@@ -51,8 +204,8 @@ let currentContinent = 0;
 let currentCountryKey= '';
 let currentGameName  = '';
 let score            = 0;
-let blockLetters     = [];   // 30 slots: letra | 'GOOD' | 'BAD' | null
-let blockVisible     = [];   // true = bloque removido (imagen visible)
+let blockLetters     = [];
+let blockVisible     = [];
 let brightBlock      = 0;
 let brightInterval   = null;
 let animRunning      = false;
@@ -62,7 +215,6 @@ let guessMode        = false;
 let correctLetters   = new Set();
 let wrongLetters     = new Set();
 
-// Puntajes persistentes: { 'AMERICA/ARGENTINA': 850, ... }
 let savedScores = {};
 
 // ========== INICIO ==========
@@ -71,12 +223,10 @@ window.addEventListener('load', () => {
   document.getElementById('logo-img').src = IMAGES.LOGO;
   buildQwerty();
   goScreen(1);
-  // Listeners del sound bar fijo
   document.getElementById('btn-music').addEventListener('click', toggleMusic);
   document.getElementById('btn-sfx').addEventListener('click', toggleSFX);
 });
 
-// ========== PERSISTENCIA ==========
 function loadSavedScores() {
   try {
     const s = localStorage.getItem('quizbanderas_scores');
@@ -117,9 +267,9 @@ function updateSoundUI() {
 // ========== INICIO PARTIDA ==========
 function startGame() {
   const all = [];
-  for (const c of CONTINENTS) {
+  for (const c of CONTINENTS)
     for (const k of COUNTRIES[c]) all.push({ continent: c, key: k });
-  }
+
   const unplayed = all.filter(x => savedScores[scoreKey(x.continent, x.key)] === undefined);
   if (unplayed.length === 0) {
     showToast('🏆 ¡Completaste todas las banderas!');
@@ -165,9 +315,7 @@ function loadRound(continent, countryKey) {
 
 // ========== BLOQUES ==========
 function buildBlocks() {
-  // 27 letras + 1 GOOD + 1 BAD + 1 null = 30 slots
   const pool = [...ALPHABET, 'GOOD', 'BAD', null];
-  // Fisher-Yates shuffle
   for (let i = pool.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [pool[i], pool[j]] = [pool[j], pool[i]];
@@ -233,7 +381,6 @@ function pressStop() {
   stopAnimation();
   const idx = brightBlock;
 
-  // Revelar bloque
   blockVisible[idx] = true;
   document.getElementById('block-' + idx)?.classList.add('hidden');
 
@@ -259,12 +406,11 @@ function pressStop() {
 
   const letter = assignment;
 
-  // Letra ya correcta → saltar
   if (correctLetters.has(letter)) {
     restartIfPossible();
     return;
   }
-  // Letra en wrongLetters pero pertenece al nombre → revelar sin penalizar
+
   if (wrongLetters.has(letter)) {
     if (currentGameName.includes(letter)) {
       wrongLetters.delete(letter);
@@ -277,7 +423,6 @@ function pressStop() {
     return;
   }
 
-  // Mostrar panel de pregunta
   currentRevealedLetter = letter;
   document.getElementById('revealed-letter').textContent = letter;
   document.getElementById('letter-panel').classList.add('visible');
@@ -314,7 +459,7 @@ function answerYesNo(userSaidYes) {
     addWrongLetter(letter, 'red');
   } else if (!userSaidYes && inName) {
     changeScore(-100);
-    addCorrectLetter(letter, true);  // penalizada → cuadro rojo
+    addCorrectLetter(letter, true);
   } else {
     addWrongLetter(letter, 'green');
   }
@@ -340,14 +485,6 @@ function addCorrectLetter(letter, penalized = false) {
   if (key) { key.disabled = true; key.classList.add('used-correct'); }
 }
 
-function addJokerBadge(emoji, color) {
-  const disc = document.getElementById('discarded-letters');
-  const span = document.createElement('span');
-  span.className = 'disc-letter ' + color;
-  span.textContent = emoji;
-  disc.appendChild(span);
-}
-
 function addWrongLetter(letter, color) {
   wrongLetters.add(letter);
   const disc = document.getElementById('discarded-letters');
@@ -357,6 +494,14 @@ function addWrongLetter(letter, color) {
   disc.appendChild(span);
   const key = document.querySelector(`.qkey[data-letter="${letter}"]`);
   if (key) { key.disabled = true; key.classList.add('used-wrong'); }
+}
+
+function addJokerBadge(emoji, color) {
+  const disc = document.getElementById('discarded-letters');
+  const span = document.createElement('span');
+  span.className = 'disc-letter ' + color;
+  span.textContent = emoji;
+  disc.appendChild(span);
 }
 
 // ========== COMODÍN BUENO ==========
@@ -379,7 +524,7 @@ function changeScore(delta) {
   el.textContent = score;
   if (delta < 0) {
     el.classList.remove('score-hit');
-    void el.offsetWidth;  // reflow para reiniciar animación
+    void el.offsetWidth;
     el.classList.add('score-hit');
   }
 }
@@ -414,7 +559,7 @@ function checkWin() {
 
 function showWinModal() {
   const continent = CONTINENTS[currentContinent];
-  document.getElementById('modal-flag').src          = IMAGES[continent][currentCountryKey];
+  document.getElementById('modal-flag').src            = IMAGES[continent][currentCountryKey];
   document.getElementById('modal-country').textContent = DISPLAY_NAMES[currentCountryKey];
   document.getElementById('modal-score-val').textContent = score;
   document.getElementById('modal-overlay').classList.add('visible');
