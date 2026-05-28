@@ -285,6 +285,7 @@ function loadRound(continent, countryKey) {
   document.getElementById('letter-panel').classList.remove('visible');
   document.getElementById('qwerty-panel').classList.remove('visible');
   document.getElementById('discarded-letters').innerHTML = '';
+  document.getElementById('action-row').style.display = '';
   document.getElementById('btn-stop').disabled  = false;
   document.getElementById('btn-guess').disabled = false;
   resetQwertyKeys();
@@ -539,8 +540,7 @@ function showWinModal() {
 // ========== MODO ADIVINAR ==========
 function enterGuessMode() {
   guessMode = true; stopAnimation();
-  document.getElementById('btn-stop').disabled  = true;
-  document.getElementById('btn-guess').disabled = true;
+  document.getElementById('action-row').style.display = 'none';
   document.getElementById('letter-panel').classList.remove('visible');
   document.getElementById('qwerty-panel').classList.add('visible');
 }
