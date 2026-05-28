@@ -544,6 +544,70 @@ body::before {
 }
 #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
+/* ========== SCREEN 5: Elegir Continentes ========== */
+#screen5 { gap: 20px; }
+#screen5 h2 {
+  font-family: 'Bangers', cursive;
+  font-size: 38px;
+  color: var(--gold);
+  letter-spacing: 4px;
+}
+#s5-hint {
+  font-size: 15px;
+  color: rgba(255,255,255,0.6);
+  letter-spacing: 1px;
+  margin-top: -10px;
+}
+#continent-checkboxes {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 360px;
+}
+.continent-option {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(255,255,255,0.07);
+  border: 2px solid rgba(255,255,255,0.12);
+  border-radius: 12px;
+  padding: 14px 20px;
+  cursor: pointer;
+  transition: background .2s, border-color .2s;
+  user-select: none;
+}
+.continent-option:hover { background: rgba(255,215,0,0.1); border-color: rgba(255,215,0,0.4); }
+.continent-option.selected {
+  background: rgba(255,215,0,0.15);
+  border-color: var(--gold);
+}
+.continent-option .c-emoji { font-size: 26px; }
+.continent-option .c-label {
+  font-family: 'Bangers', cursive;
+  font-size: 22px;
+  letter-spacing: 2px;
+  flex: 1;
+}
+.continent-option .c-count {
+  font-size: 13px;
+  color: rgba(255,255,255,0.45);
+}
+.continent-option .c-check {
+  width: 24px; height: 24px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+  transition: background .2s, border-color .2s;
+}
+.continent-option.selected .c-check {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--navy);
+}
+#screen5-buttons { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; margin-top: 6px; }
+
 ::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }

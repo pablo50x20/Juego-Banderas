@@ -1,7 +1,18 @@
 // ========== GAME DATA ==========
-const CONTINENTS = ['AMERICA', 'EUROPA'];
+const CONTINENTS = ['AFRICA', 'AMERICA', 'ASIA', 'EUROPA', 'OCEANIA'];
 
 const COUNTRIES = {
+  AFRICA: [
+    'ANGOLA','ARGELIA','BENIN','BOTSUANA','BURKINA_FASO','BURUNDI','CABO_VERDE',
+    'CAMERUN','CHAD','COMORAS','COSTA_DE_MARFIL','EGIPTO','ERITREA','ETIOPIA',
+    'GABON','GAMBIA','GHANA','GUINEA','GUINEA_ECUATORIAL','GUINEA_BISAU','KENIA',
+    'LESOTO','LIBERIA','LIBIA','MADAGASCAR','MALAUI','MALI','MARRUECOS','MAURICIO',
+    'MAURITANIA','MOZAMBIQUE','NAMIBIA','NIGER','NIGERIA','REPUBLICA_CENTROAFRICANA',
+    'REPUBLICA_DEL_CONGO','REPUBLICA_DEMOCRATICA_DEL_CONGO','RUANDA',
+    'SANTO_TOME_Y_PRINCIPE','SENEGAL','SEYCHELLES','SIERRA_LEONA','SOMALIA',
+    'SUDAFRICA','SUDAN','SUDAN_DEL_SUR','TUNEZ','TANZANIA','TOGO','UGANDA',
+    'YIBUTI','ZAMBIA','ZIMBABUE'
+  ],
   AMERICA: [
     'ANTIGUA_Y_BARBUDA','ARGENTINA','BAHAMAS','BARBADOS','BELICE','BOLIVIA',
     'BRASIL','CANADA','CHILE','COLOMBIA','COSTA_RICA','CUBA','DOMINICA',
@@ -9,6 +20,16 @@ const COUNTRIES = {
     'HONDURAS','JAMAICA','MEXICO','NICARAGUA','PANAMA','PARAGUAY','PERU',
     'REPUBLICA_DOMINICANA','SAN_CRISTOBAL_Y_NIEVES','SAN_VICENTE_Y_LAS_GRANADINAS',
     'SANTA_LUCIA','TRINIDAD_Y_TOBAGO','URUGUAY','VENEZUELA'
+  ],
+  ASIA: [
+    'AFGANISTAN','ARABIA_SAUDITA','ARMENIA','AZERBAIYAN','BANGLADESH','BAREIN',
+    'BIRMANIA','BRUNEI','BUTAN','CAMBOYA','CATAR','CHINA','CHIPRE',
+    'COREA_DEL_NORTE','COREA_DEL_SUR','EMIRATOS_ARABES_UNIDOS','FILIPINAS',
+    'GEORGIA','INDIA','INDONESIA','IRAN','IRAK','ISRAEL','JAPON','JORDANIA',
+    'KAZAJISTAN','KIRGUISTAN','KUWAIT','LAOS','LIBANO','MALASIA','MALDIVAS',
+    'MONGOLIA','OMAN','PAKISTAN','PALESTINA','SINGAPUR','SIRIA','SRI_LANKA',
+    'TAILANDIA','TAYIKISTAN','TIMOR_ORIENTAL','TURKMENISTAN','TURQUIA',
+    'UZBEKISTAN','VIETNAM','YEMEN'
   ],
   EUROPA: [
     'ALBANIA','ALEMANIA','ANDORRA','AUSTRIA','BELGICA','BIELORRUSIA',
@@ -19,203 +40,170 @@ const COUNTRIES = {
     'MONACO','MACEDONIA_DEL_NORTE','MALTA','MOLDAVIA','MONTENEGRO','NORUEGA',
     'PAISES_BAJOS','POLONIA','PORTUGAL','REPUBLICA_CHECA','RUMANIA','RUSIA',
     'SAN_MARINO','SERBIA','SUECIA','SUIZA','UCRANIA'
+  ],
+  OCEANIA: [
+    'AUSTRALIA','ESTADOS_FEDERADOS_DE_MICRONESIA','FIYI','ISLAS_MARSHALL',
+    'ISLAS_SALOMON','KIRIBATI','NAURU','NUEVA_ZELANDA','PALAOS',
+    'PAPUA_NUEVA_GUINEA','SAMOA','TONGA','TUVALU','VANUATU'
   ]
 };
 
 const DISPLAY_NAMES = {
-  ANTIGUA_Y_BARBUDA:            'ANTIGUA Y BARBUDA',
-  ARGENTINA:                    'ARGENTINA',
-  BAHAMAS:                      'BAHAMAS',
-  BARBADOS:                     'BARBADOS',
-  BELICE:                       'BELICE',
-  BOLIVIA:                      'BOLIVIA',
-  BRASIL:                       'BRASIL',
-  CANADA:                       'CANADÁ',
-  CHILE:                        'CHILE',
-  COLOMBIA:                     'COLOMBIA',
-  COSTA_RICA:                   'COSTA RICA',
-  CUBA:                         'CUBA',
-  DOMINICA:                     'DOMÍNICA',
-  ECUADOR:                      'ECUADOR',
-  EL_SALVADOR:                  'EL SALVADOR',
-  ESTADOS_UNIDOS:               'ESTADOS UNIDOS',
-  GRANADA:                      'GRANADA',
-  GUATEMALA:                    'GUATEMALA',
-  HAITI:                        'HAITÍ',
-  HONDURAS:                     'HONDURAS',
-  JAMAICA:                      'JAMAICA',
-  MEXICO:                       'MÉXICO',
-  NICARAGUA:                    'NICARAGUA',
-  PANAMA:                       'PANAMÁ',
-  PARAGUAY:                     'PARAGUAY',
-  PERU:                         'PERÚ',
-  REPUBLICA_DOMINICANA:         'REPÚBLICA DOMINICANA',
-  SAN_CRISTOBAL_Y_NIEVES:       'SAN CRISTÓBAL Y NIEVES',
-  SAN_VICENTE_Y_LAS_GRANADINAS: 'SAN VICENTE Y LAS GRANADINAS',
-  SANTA_LUCIA:                  'SANTA LUCÍA',
-  TRINIDAD_Y_TOBAGO:            'TRINIDAD Y TOBAGO',
-  URUGUAY:                      'URUGUAY',
-  VENEZUELA:                    'VENEZUELA',
-  ALBANIA:                      'ALBANIA',
-  ALEMANIA:                     'ALEMANIA',
-  ANDORRA:                      'ANDORRA',
-  AUSTRIA:                      'AUSTRIA',
-  BELGICA:                      'BÉLGICA',
-  BIELORRUSIA:                  'BIELORRUSIA',
-  BOSNIA_Y_HERZEGOVINA:         'BOSNIA Y HERZEGOVINA',
-  BULGARIA:                     'BULGARIA',
-  CIUDAD_DEL_VATICANO:          'CIUDAD DEL VATICANO',
-  CROACIA:                      'CROACIA',
-  DINAMARCA:                    'DINAMARCA',
-  ESCOCIA:                      'ESCOCIA',
-  ESLOVAQUIA:                   'ESLOVAQUIA',
-  ESLOVENIA:                    'ESLOVENIA',
-  ESPANA:                       'ESPAÑA',
-  ESTONIA:                      'ESTONIA',
-  FINLANDIA:                    'FINLANDIA',
-  FRANCIA:                      'FRANCIA',
-  GALES:                        'GALES',
-  GRECIA:                       'GRECIA',
-  HUNGRIA:                      'HUNGRÍA',
-  INGLATERRA:                   'INGLATERRA',
-  IRLANDA:                      'IRLANDA',
-  ISLANDIA:                     'ISLANDIA',
-  ITALIA:                       'ITALIA',
-  LETONIA:                      'LETONIA',
-  LIECHTENSTEIN:                'LIECHTENSTEIN',
-  LITUANIA:                     'LITUANIA',
-  LUXEMBURGO:                   'LUXEMBURGO',
-  MONACO:                       'MÓNACO',
-  MACEDONIA_DEL_NORTE:          'MACEDONIA DEL NORTE',
-  MALTA:                        'MALTA',
-  MOLDAVIA:                     'MOLDAVIA',
-  MONTENEGRO:                   'MONTENEGRO',
-  NORUEGA:                      'NORUEGA',
-  PAISES_BAJOS:                 'PAÍSES BAJOS',
-  POLONIA:                      'POLONIA',
-  PORTUGAL:                     'PORTUGAL',
-  REPUBLICA_CHECA:              'REPÚBLICA CHECA',
-  RUMANIA:                      'RUMANIA',
-  RUSIA:                        'RUSIA',
-  SAN_MARINO:                   'SAN MARINO',
-  SERBIA:                       'SERBIA',
-  SUECIA:                       'SUECIA',
-  SUIZA:                        'SUIZA',
-  UCRANIA:                      'UCRANIA',
+  // AFRICA
+  ANGOLA:'ANGOLA', ARGELIA:'ARGELIA', BENIN:'BENÍN', BOTSUANA:'BOTSUANA',
+  BURKINA_FASO:'BURKINA FASO', BURUNDI:'BURUNDI', CABO_VERDE:'CABO VERDE',
+  CAMERUN:'CAMERÚN', CHAD:'CHAD', COMORAS:'COMORAS', COSTA_DE_MARFIL:'COSTA DE MARFIL',
+  EGIPTO:'EGIPTO', ERITREA:'ERITREA', ETIOPIA:'ETIOPÍA', GABON:'GABÓN',
+  GAMBIA:'GAMBIA', GHANA:'GHANA', GUINEA:'GUINEA', GUINEA_ECUATORIAL:'GUINEA ECUATORIAL',
+  GUINEA_BISAU:'GUINEA-BISÁU', KENIA:'KENIA', LESOTO:'LESOTO', LIBERIA:'LIBERIA',
+  LIBIA:'LIBIA', MADAGASCAR:'MADAGASCAR', MALAUI:'MALAUI', MALI:'MALÍ',
+  MARRUECOS:'MARRUECOS', MAURICIO:'MAURICIO', MAURITANIA:'MAURITANIA',
+  MOZAMBIQUE:'MOZAMBIQUE', NAMIBIA:'NAMIBIA', NIGER:'NÍGER', NIGERIA:'NIGERIA',
+  REPUBLICA_CENTROAFRICANA:'REPÚBLICA CENTROAFRICANA',
+  REPUBLICA_DEL_CONGO:'REPÚBLICA DEL CONGO',
+  REPUBLICA_DEMOCRATICA_DEL_CONGO:'REPÚBLICA DEMOCRÁTICA DEL CONGO',
+  RUANDA:'RUANDA', SANTO_TOME_Y_PRINCIPE:'SANTO TOMÉ Y PRÍNCIPE',
+  SENEGAL:'SENEGAL', SEYCHELLES:'SEYCHELLES', SIERRA_LEONA:'SIERRA LEONA',
+  SOMALIA:'SOMALIA', SUDAFRICA:'SUDÁFRICA', SUDAN:'SUDÁN', SUDAN_DEL_SUR:'SUDÁN DEL SUR',
+  TUNEZ:'TÚNEZ', TANZANIA:'TANZANIA', TOGO:'TOGO', UGANDA:'UGANDA',
+  YIBUTI:'YIBUTI', ZAMBIA:'ZAMBIA', ZIMBABUE:'ZIMBABUE',
+  // AMERICA
+  ANTIGUA_Y_BARBUDA:'ANTIGUA Y BARBUDA', ARGENTINA:'ARGENTINA', BAHAMAS:'BAHAMAS',
+  BARBADOS:'BARBADOS', BELICE:'BELICE', BOLIVIA:'BOLIVIA', BRASIL:'BRASIL',
+  CANADA:'CANADÁ', CHILE:'CHILE', COLOMBIA:'COLOMBIA', COSTA_RICA:'COSTA RICA',
+  CUBA:'CUBA', DOMINICA:'DOMÍNICA', ECUADOR:'ECUADOR', EL_SALVADOR:'EL SALVADOR',
+  ESTADOS_UNIDOS:'ESTADOS UNIDOS', GRANADA:'GRANADA', GUATEMALA:'GUATEMALA',
+  HAITI:'HAITÍ', HONDURAS:'HONDURAS', JAMAICA:'JAMAICA', MEXICO:'MÉXICO',
+  NICARAGUA:'NICARAGUA', PANAMA:'PANAMÁ', PARAGUAY:'PARAGUAY', PERU:'PERÚ',
+  REPUBLICA_DOMINICANA:'REPÚBLICA DOMINICANA',
+  SAN_CRISTOBAL_Y_NIEVES:'SAN CRISTÓBAL Y NIEVES',
+  SAN_VICENTE_Y_LAS_GRANADINAS:'SAN VICENTE Y LAS GRANADINAS',
+  SANTA_LUCIA:'SANTA LUCÍA', TRINIDAD_Y_TOBAGO:'TRINIDAD Y TOBAGO',
+  URUGUAY:'URUGUAY', VENEZUELA:'VENEZUELA',
+  // ASIA
+  AFGANISTAN:'AFGANISTÁN', ARABIA_SAUDITA:'ARABIA SAUDITA', ARMENIA:'ARMENIA',
+  AZERBAIYAN:'AZERBAIYÁN', BANGLADESH:'BANGLADÉS', BAREIN:'BARÉIN',
+  BIRMANIA:'BIRMANIA', BRUNEI:'BRUNÉI', BUTAN:'BUTÁN', CAMBOYA:'CAMBOYA',
+  CATAR:'CATAR', CHINA:'CHINA', CHIPRE:'CHIPRE', COREA_DEL_NORTE:'COREA DEL NORTE',
+  COREA_DEL_SUR:'COREA DEL SUR', EMIRATOS_ARABES_UNIDOS:'EMIRATOS ÁRABES UNIDOS',
+  FILIPINAS:'FILIPINAS', GEORGIA:'GEORGIA', INDIA:'INDIA', INDONESIA:'INDONESIA',
+  IRAN:'IRÁN', IRAK:'IRAK', ISRAEL:'ISRAEL', JAPON:'JAPÓN', JORDANIA:'JORDANIA',
+  KAZAJISTAN:'KAZAJISTÁN', KIRGUISTAN:'KIRGUISTÁN', KUWAIT:'KUWAIT',
+  LAOS:'LAOS', LIBANO:'LÍBANO', MALASIA:'MALASIA', MALDIVAS:'MALDIVAS',
+  MONGOLIA:'MONGOLIA', OMAN:'OMÁN', PAKISTAN:'PAKISTÁN', PALESTINA:'PALESTINA',
+  SINGAPUR:'SINGAPUR', SIRIA:'SIRIA', SRI_LANKA:'SRI LANKA', TAILANDIA:'TAILANDIA',
+  TAYIKISTAN:'TAYIKISTÁN', TIMOR_ORIENTAL:'TIMOR ORIENTAL',
+  TURKMENISTAN:'TURKMENISTÁN', TURQUIA:'TURQUÍA', UZBEKISTAN:'UZBEKISTÁN',
+  VIETNAM:'VIETNAM', YEMEN:'YEMEN',
+  // EUROPA
+  ALBANIA:'ALBANIA', ALEMANIA:'ALEMANIA', ANDORRA:'ANDORRA', AUSTRIA:'AUSTRIA',
+  BELGICA:'BÉLGICA', BIELORRUSIA:'BIELORRUSIA', BOSNIA_Y_HERZEGOVINA:'BOSNIA Y HERZEGOVINA',
+  BULGARIA:'BULGARIA', CIUDAD_DEL_VATICANO:'CIUDAD DEL VATICANO', CROACIA:'CROACIA',
+  DINAMARCA:'DINAMARCA', ESCOCIA:'ESCOCIA', ESLOVAQUIA:'ESLOVAQUIA',
+  ESLOVENIA:'ESLOVENIA', ESPANA:'ESPAÑA', ESTONIA:'ESTONIA', FINLANDIA:'FINLANDIA',
+  FRANCIA:'FRANCIA', GALES:'GALES', GRECIA:'GRECIA', HUNGRIA:'HUNGRÍA',
+  INGLATERRA:'INGLATERRA', IRLANDA:'IRLANDA', ISLANDIA:'ISLANDIA', ITALIA:'ITALIA',
+  LETONIA:'LETONIA', LIECHTENSTEIN:'LIECHTENSTEIN', LITUANIA:'LITUANIA',
+  LUXEMBURGO:'LUXEMBURGO', MONACO:'MÓNACO', MACEDONIA_DEL_NORTE:'MACEDONIA DEL NORTE',
+  MALTA:'MALTA', MOLDAVIA:'MOLDAVIA', MONTENEGRO:'MONTENEGRO', NORUEGA:'NORUEGA',
+  PAISES_BAJOS:'PAÍSES BAJOS', POLONIA:'POLONIA', PORTUGAL:'PORTUGAL',
+  REPUBLICA_CHECA:'REPÚBLICA CHECA', RUMANIA:'RUMANIA', RUSIA:'RUSIA',
+  SAN_MARINO:'SAN MARINO', SERBIA:'SERBIA', SUECIA:'SUECIA', SUIZA:'SUIZA',
+  UCRANIA:'UCRANIA',
+  // OCEANIA
+  AUSTRALIA:'AUSTRALIA', ESTADOS_FEDERADOS_DE_MICRONESIA:'ESTADOS FEDERADOS DE MICRONESIA',
+  FIYI:'FIYI', ISLAS_MARSHALL:'ISLAS MARSHALL', ISLAS_SALOMON:'ISLAS SALOMÓN',
+  KIRIBATI:'KIRIBATI', NAURU:'NAURU', NUEVA_ZELANDA:'NUEVA ZELANDA',
+  PALAOS:'PALAOS', PAPUA_NUEVA_GUINEA:'PAPÚA NUEVA GUINEA', SAMOA:'SAMOA',
+  TONGA:'TONGA', TUVALU:'TUVALU', VANUATU:'VANUATU',
 };
 
-// Nombres normalizados para lógica del juego (sin tildes, Ñ se mantiene)
+// Nombres para lógica del juego (sin tildes, Ñ se mantiene)
 const GAME_NAMES = {
-  ANTIGUA_Y_BARBUDA:            'ANTIGUA Y BARBUDA',
-  ARGENTINA:                    'ARGENTINA',
-  BAHAMAS:                      'BAHAMAS',
-  BARBADOS:                     'BARBADOS',
-  BELICE:                       'BELICE',
-  BOLIVIA:                      'BOLIVIA',
-  BRASIL:                       'BRASIL',
-  CANADA:                       'CANADA',
-  CHILE:                        'CHILE',
-  COLOMBIA:                     'COLOMBIA',
-  COSTA_RICA:                   'COSTA RICA',
-  CUBA:                         'CUBA',
-  DOMINICA:                     'DOMINICA',
-  ECUADOR:                      'ECUADOR',
-  EL_SALVADOR:                  'EL SALVADOR',
-  ESTADOS_UNIDOS:               'ESTADOS UNIDOS',
-  GRANADA:                      'GRANADA',
-  GUATEMALA:                    'GUATEMALA',
-  HAITI:                        'HAITI',
-  HONDURAS:                     'HONDURAS',
-  JAMAICA:                      'JAMAICA',
-  MEXICO:                       'MEXICO',
-  NICARAGUA:                    'NICARAGUA',
-  PANAMA:                       'PANAMA',
-  PARAGUAY:                     'PARAGUAY',
-  PERU:                         'PERU',
-  REPUBLICA_DOMINICANA:         'REPUBLICA DOMINICANA',
-  SAN_CRISTOBAL_Y_NIEVES:       'SAN CRISTOBAL Y NIEVES',
-  SAN_VICENTE_Y_LAS_GRANADINAS: 'SAN VICENTE Y LAS GRANADINAS',
-  SANTA_LUCIA:                  'SANTA LUCIA',
-  TRINIDAD_Y_TOBAGO:            'TRINIDAD Y TOBAGO',
-  URUGUAY:                      'URUGUAY',
-  VENEZUELA:                    'VENEZUELA',
-  ALBANIA:                      'ALBANIA',
-  ALEMANIA:                     'ALEMANIA',
-  ANDORRA:                      'ANDORRA',
-  AUSTRIA:                      'AUSTRIA',
-  BELGICA:                      'BELGICA',
-  BIELORRUSIA:                  'BIELORRUSIA',
-  BOSNIA_Y_HERZEGOVINA:         'BOSNIA Y HERZEGOVINA',
-  BULGARIA:                     'BULGARIA',
-  CIUDAD_DEL_VATICANO:          'CIUDAD DEL VATICANO',
-  CROACIA:                      'CROACIA',
-  DINAMARCA:                    'DINAMARCA',
-  ESCOCIA:                      'ESCOCIA',
-  ESLOVAQUIA:                   'ESLOVAQUIA',
-  ESLOVENIA:                    'ESLOVENIA',
-  ESPANA:                       'ESPAÑA',
-  ESTONIA:                      'ESTONIA',
-  FINLANDIA:                    'FINLANDIA',
-  FRANCIA:                      'FRANCIA',
-  GALES:                        'GALES',
-  GRECIA:                       'GRECIA',
-  HUNGRIA:                      'HUNGRIA',
-  INGLATERRA:                   'INGLATERRA',
-  IRLANDA:                      'IRLANDA',
-  ISLANDIA:                     'ISLANDIA',
-  ITALIA:                       'ITALIA',
-  LETONIA:                      'LETONIA',
-  LIECHTENSTEIN:                'LIECHTENSTEIN',
-  LITUANIA:                     'LITUANIA',
-  LUXEMBURGO:                   'LUXEMBURGO',
-  MONACO:                       'MONACO',
-  MACEDONIA_DEL_NORTE:          'MACEDONIA DEL NORTE',
-  MALTA:                        'MALTA',
-  MOLDAVIA:                     'MOLDAVIA',
-  MONTENEGRO:                   'MONTENEGRO',
-  NORUEGA:                      'NORUEGA',
-  PAISES_BAJOS:                 'PAISES BAJOS',
-  POLONIA:                      'POLONIA',
-  PORTUGAL:                     'PORTUGAL',
-  REPUBLICA_CHECA:              'REPUBLICA CHECA',
-  RUMANIA:                      'RUMANIA',
-  RUSIA:                        'RUSIA',
-  SAN_MARINO:                   'SAN MARINO',
-  SERBIA:                       'SERBIA',
-  SUECIA:                       'SUECIA',
-  SUIZA:                        'SUIZA',
-  UCRANIA:                      'UCRANIA',
+  // AFRICA
+  ANGOLA:'ANGOLA', ARGELIA:'ARGELIA', BENIN:'BENIN', BOTSUANA:'BOTSUANA',
+  BURKINA_FASO:'BURKINA FASO', BURUNDI:'BURUNDI', CABO_VERDE:'CABO VERDE',
+  CAMERUN:'CAMERUN', CHAD:'CHAD', COMORAS:'COMORAS', COSTA_DE_MARFIL:'COSTA DE MARFIL',
+  EGIPTO:'EGIPTO', ERITREA:'ERITREA', ETIOPIA:'ETIOPIA', GABON:'GABON',
+  GAMBIA:'GAMBIA', GHANA:'GHANA', GUINEA:'GUINEA', GUINEA_ECUATORIAL:'GUINEA ECUATORIAL',
+  GUINEA_BISAU:'GUINEA-BISAU', KENIA:'KENIA', LESOTO:'LESOTO', LIBERIA:'LIBERIA',
+  LIBIA:'LIBIA', MADAGASCAR:'MADAGASCAR', MALAUI:'MALAUI', MALI:'MALI',
+  MARRUECOS:'MARRUECOS', MAURICIO:'MAURICIO', MAURITANIA:'MAURITANIA',
+  MOZAMBIQUE:'MOZAMBIQUE', NAMIBIA:'NAMIBIA', NIGER:'NIGER', NIGERIA:'NIGERIA',
+  REPUBLICA_CENTROAFRICANA:'REPUBLICA CENTROAFRICANA',
+  REPUBLICA_DEL_CONGO:'REPUBLICA DEL CONGO',
+  REPUBLICA_DEMOCRATICA_DEL_CONGO:'REPUBLICA DEMOCRATICA DEL CONGO',
+  RUANDA:'RUANDA', SANTO_TOME_Y_PRINCIPE:'SANTO TOME Y PRINCIPE',
+  SENEGAL:'SENEGAL', SEYCHELLES:'SEYCHELLES', SIERRA_LEONA:'SIERRA LEONA',
+  SOMALIA:'SOMALIA', SUDAFRICA:'SUDAFRICA', SUDAN:'SUDAN', SUDAN_DEL_SUR:'SUDAN DEL SUR',
+  TUNEZ:'TUNEZ', TANZANIA:'TANZANIA', TOGO:'TOGO', UGANDA:'UGANDA',
+  YIBUTI:'YIBUTI', ZAMBIA:'ZAMBIA', ZIMBABUE:'ZIMBABUE',
+  // AMERICA
+  ANTIGUA_Y_BARBUDA:'ANTIGUA Y BARBUDA', ARGENTINA:'ARGENTINA', BAHAMAS:'BAHAMAS',
+  BARBADOS:'BARBADOS', BELICE:'BELICE', BOLIVIA:'BOLIVIA', BRASIL:'BRASIL',
+  CANADA:'CANADA', CHILE:'CHILE', COLOMBIA:'COLOMBIA', COSTA_RICA:'COSTA RICA',
+  CUBA:'CUBA', DOMINICA:'DOMINICA', ECUADOR:'ECUADOR', EL_SALVADOR:'EL SALVADOR',
+  ESTADOS_UNIDOS:'ESTADOS UNIDOS', GRANADA:'GRANADA', GUATEMALA:'GUATEMALA',
+  HAITI:'HAITI', HONDURAS:'HONDURAS', JAMAICA:'JAMAICA', MEXICO:'MEXICO',
+  NICARAGUA:'NICARAGUA', PANAMA:'PANAMA', PARAGUAY:'PARAGUAY', PERU:'PERU',
+  REPUBLICA_DOMINICANA:'REPUBLICA DOMINICANA',
+  SAN_CRISTOBAL_Y_NIEVES:'SAN CRISTOBAL Y NIEVES',
+  SAN_VICENTE_Y_LAS_GRANADINAS:'SAN VICENTE Y LAS GRANADINAS',
+  SANTA_LUCIA:'SANTA LUCIA', TRINIDAD_Y_TOBAGO:'TRINIDAD Y TOBAGO',
+  URUGUAY:'URUGUAY', VENEZUELA:'VENEZUELA',
+  // ASIA
+  AFGANISTAN:'AFGANISTAN', ARABIA_SAUDITA:'ARABIA SAUDITA', ARMENIA:'ARMENIA',
+  AZERBAIYAN:'AZERBAIYAN', BANGLADESH:'BANGLADESH', BAREIN:'BAREIN',
+  BIRMANIA:'BIRMANIA', BRUNEI:'BRUNEI', BUTAN:'BUTAN', CAMBOYA:'CAMBOYA',
+  CATAR:'CATAR', CHINA:'CHINA', CHIPRE:'CHIPRE', COREA_DEL_NORTE:'COREA DEL NORTE',
+  COREA_DEL_SUR:'COREA DEL SUR', EMIRATOS_ARABES_UNIDOS:'EMIRATOS ARABES UNIDOS',
+  FILIPINAS:'FILIPINAS', GEORGIA:'GEORGIA', INDIA:'INDIA', INDONESIA:'INDONESIA',
+  IRAN:'IRAN', IRAK:'IRAK', ISRAEL:'ISRAEL', JAPON:'JAPON', JORDANIA:'JORDANIA',
+  KAZAJISTAN:'KAZAJISTAN', KIRGUISTAN:'KIRGUISTAN', KUWAIT:'KUWAIT',
+  LAOS:'LAOS', LIBANO:'LIBANO', MALASIA:'MALASIA', MALDIVAS:'MALDIVAS',
+  MONGOLIA:'MONGOLIA', OMAN:'OMAN', PAKISTAN:'PAKISTAN', PALESTINA:'PALESTINA',
+  SINGAPUR:'SINGAPUR', SIRIA:'SIRIA', SRI_LANKA:'SRI LANKA', TAILANDIA:'TAILANDIA',
+  TAYIKISTAN:'TAYIKISTAN', TIMOR_ORIENTAL:'TIMOR ORIENTAL',
+  TURKMENISTAN:'TURKMENISTAN', TURQUIA:'TURQUIA', UZBEKISTAN:'UZBEKISTAN',
+  VIETNAM:'VIETNAM', YEMEN:'YEMEN',
+  // EUROPA
+  ALBANIA:'ALBANIA', ALEMANIA:'ALEMANIA', ANDORRA:'ANDORRA', AUSTRIA:'AUSTRIA',
+  BELGICA:'BELGICA', BIELORRUSIA:'BIELORRUSIA', BOSNIA_Y_HERZEGOVINA:'BOSNIA Y HERZEGOVINA',
+  BULGARIA:'BULGARIA', CIUDAD_DEL_VATICANO:'CIUDAD DEL VATICANO', CROACIA:'CROACIA',
+  DINAMARCA:'DINAMARCA', ESCOCIA:'ESCOCIA', ESLOVAQUIA:'ESLOVAQUIA',
+  ESLOVENIA:'ESLOVENIA', ESPANA:'ESPAÑA', ESTONIA:'ESTONIA', FINLANDIA:'FINLANDIA',
+  FRANCIA:'FRANCIA', GALES:'GALES', GRECIA:'GRECIA', HUNGRIA:'HUNGRIA',
+  INGLATERRA:'INGLATERRA', IRLANDA:'IRLANDA', ISLANDIA:'ISLANDIA', ITALIA:'ITALIA',
+  LETONIA:'LETONIA', LIECHTENSTEIN:'LIECHTENSTEIN', LITUANIA:'LITUANIA',
+  LUXEMBURGO:'LUXEMBURGO', MONACO:'MONACO', MACEDONIA_DEL_NORTE:'MACEDONIA DEL NORTE',
+  MALTA:'MALTA', MOLDAVIA:'MOLDAVIA', MONTENEGRO:'MONTENEGRO', NORUEGA:'NORUEGA',
+  PAISES_BAJOS:'PAISES BAJOS', POLONIA:'POLONIA', PORTUGAL:'PORTUGAL',
+  REPUBLICA_CHECA:'REPUBLICA CHECA', RUMANIA:'RUMANIA', RUSIA:'RUSIA',
+  SAN_MARINO:'SAN MARINO', SERBIA:'SERBIA', SUECIA:'SUECIA', SUIZA:'SUIZA',
+  UCRANIA:'UCRANIA',
+  // OCEANIA
+  AUSTRALIA:'AUSTRALIA', ESTADOS_FEDERADOS_DE_MICRONESIA:'ESTADOS FEDERADOS DE MICRONESIA',
+  FIYI:'FIYI', ISLAS_MARSHALL:'ISLAS MARSHALL', ISLAS_SALOMON:'ISLAS SALOMON',
+  KIRIBATI:'KIRIBATI', NAURU:'NAURU', NUEVA_ZELANDA:'NUEVA ZELANDA',
+  PALAOS:'PALAOS', PAPUA_NUEVA_GUINEA:'PAPUA NUEVA GUINEA', SAMOA:'SAMOA',
+  TONGA:'TONGA', TUVALU:'TUVALU', VANUATU:'VANUATU',
 };
 
-// Alfabeto español (27 letras)
 const ALPHABET = 'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ'.split('');
-
-// Filas teclado QWERTY español
-const QWERTY_ROWS = [
-  'QWERTYUIOP',
-  'ASDFGHJKL',
-  'ZXCVBNMÑ'
-];
+const QWERTY_ROWS = ['QWERTYUIOP', 'ASDFGHJKL', 'ZXCVBNMÑ'];
 
 // ========== ESTADO ==========
-let musicOn          = true;
-let sfxOn            = true;
+let musicOn = true, sfxOn = true;
 let currentContinent = 0;
-let currentCountryKey= '';
-let currentGameName  = '';
-let score            = 0;
-let blockLetters     = [];
-let blockVisible     = [];
-let brightBlock      = 0;
-let brightInterval   = null;
-let animRunning      = false;
-let waitingYesNo     = false;
-let currentRevealedLetter = '';
-let guessMode        = false;
-let correctLetters   = new Set();
-let wrongLetters     = new Set();
-
+let currentCountryKey = '';
+let currentGameName = '';
+let score = 0;
+let blockLetters = [], blockVisible = [];
+let brightBlock = 0, brightInterval = null, animRunning = false;
+let waitingYesNo = false, currentRevealedLetter = '', guessMode = false;
+let correctLetters = new Set(), wrongLetters = new Set();
 let savedScores = {};
+let selectedContinents = new Set(['AFRICA','AMERICA','ASIA','EUROPA','OCEANIA']); // todos por defecto
 
 // ========== INICIO ==========
 window.addEventListener('load', () => {
@@ -228,17 +216,11 @@ window.addEventListener('load', () => {
 });
 
 function loadSavedScores() {
-  try {
-    const s = localStorage.getItem('quizbanderas_scores');
-    if (s) savedScores = JSON.parse(s);
-  } catch (e) { savedScores = {}; }
+  try { const s = localStorage.getItem('quizbanderas_scores'); if (s) savedScores = JSON.parse(s); }
+  catch (e) { savedScores = {}; }
 }
-function saveScores() {
-  localStorage.setItem('quizbanderas_scores', JSON.stringify(savedScores));
-}
-function scoreKey(continent, country) {
-  return continent + '/' + country;
-}
+function saveScores() { localStorage.setItem('quizbanderas_scores', JSON.stringify(savedScores)); }
+function scoreKey(continent, country) { return continent + '/' + country; }
 
 // ========== NAVEGACIÓN ==========
 function goScreen(n) {
@@ -246,17 +228,12 @@ function goScreen(n) {
   document.getElementById('screen' + n).classList.add('active');
   document.getElementById('sound-bar').style.display = (n === 1) ? 'none' : 'flex';
   if (n === 4) renderScreen4();
+  if (n === 5) renderScreen5();
 }
 
 // ========== SONIDO ==========
-function toggleMusic() {
-  musicOn = !musicOn;
-  updateSoundUI();
-}
-function toggleSFX() {
-  sfxOn = !sfxOn;
-  updateSoundUI();
-}
+function toggleMusic() { musicOn = !musicOn; updateSoundUI(); }
+function toggleSFX()   { sfxOn   = !sfxOn;   updateSoundUI(); }
 function updateSoundUI() {
   document.getElementById('s1-music').textContent = '🎵 Música: ' + (musicOn ? 'ON' : 'OFF');
   document.getElementById('s1-sfx').textContent   = '🔔 Sonidos: ' + (sfxOn  ? 'ON' : 'OFF');
@@ -266,41 +243,38 @@ function updateSoundUI() {
 
 // ========== INICIO PARTIDA ==========
 function startGame() {
+  // Siempre usa todos los continentes (botón JUGAR de pantalla 2)
   const all = [];
-  for (const c of CONTINENTS)
-    for (const k of COUNTRIES[c]) all.push({ continent: c, key: k });
-
+  for (const c of CONTINENTS) for (const k of COUNTRIES[c]) all.push({ continent: c, key: k });
   const unplayed = all.filter(x => savedScores[scoreKey(x.continent, x.key)] === undefined);
-  if (unplayed.length === 0) {
-    showToast('🏆 ¡Completaste todas las banderas!');
-    goScreen(4);
-    return;
-  }
+  if (unplayed.length === 0) { showToast('🏆 ¡Completaste todas las banderas!'); goScreen(4); return; }
   const pick = unplayed[Math.floor(Math.random() * unplayed.length)];
   loadRound(pick.continent, pick.key);
 }
 
-function nextFlag() {
-  document.getElementById('modal-overlay').classList.remove('visible');
-  startGame();
+function startGameFiltered() {
+  // Usa solo los continentes seleccionados en pantalla 5
+  if (selectedContinents.size === 0) { showToast('⚠️ Elige al menos un continente'); return; }
+  const all = [];
+  for (const c of [...selectedContinents]) for (const k of COUNTRIES[c]) all.push({ continent: c, key: k });
+  const unplayed = all.filter(x => savedScores[scoreKey(x.continent, x.key)] === undefined);
+  if (unplayed.length === 0) { showToast('🏆 ¡Completaste todas las banderas!'); goScreen(4); return; }
+  const pick = unplayed[Math.floor(Math.random() * unplayed.length)];
+  loadRound(pick.continent, pick.key);
 }
+
+function nextFlag() { document.getElementById('modal-overlay').classList.remove('visible'); startGame(); }
 
 function loadRound(continent, countryKey) {
   currentContinent  = CONTINENTS.indexOf(continent);
   currentCountryKey = countryKey;
   currentGameName   = GAME_NAMES[countryKey];
-  score             = 1000;
-  correctLetters    = new Set();
-  wrongLetters      = new Set();
-  guessMode         = false;
-  waitingYesNo      = false;
-  currentRevealedLetter = '';
+  score = 1000;
+  correctLetters = new Set(); wrongLetters = new Set();
+  guessMode = false; waitingYesNo = false; currentRevealedLetter = '';
 
   document.getElementById('flag-img').src = IMAGES[continent][countryKey];
-
-  buildBlocks();
-  buildNameBoxes();
-
+  buildBlocks(); buildNameBoxes();
   document.getElementById('score-display').textContent = '1000';
   document.getElementById('letter-panel').classList.remove('visible');
   document.getElementById('qwerty-panel').classList.remove('visible');
@@ -308,7 +282,6 @@ function loadRound(continent, countryKey) {
   document.getElementById('btn-stop').disabled  = false;
   document.getElementById('btn-guess').disabled = false;
   resetQwertyKeys();
-
   startBrightAnimation();
   goScreen(3);
 }
@@ -321,12 +294,8 @@ function buildBlocks() {
     [pool[i], pool[j]] = [pool[j], pool[i]];
   }
   blockLetters = pool;
-
   blockVisible = new Array(30).fill(false);
-  // El bloque inicial descubierto es siempre el bloque vacío (null)
-  const nullIdx = blockLetters.indexOf(null);
-  blockVisible[nullIdx] = true;
-
+  blockVisible[blockLetters.indexOf(null)] = true;
   renderBlocks();
 }
 
@@ -358,8 +327,7 @@ function startBrightAnimation() {
 function randomHiddenBlock() {
   const hidden = [];
   for (let i = 0; i < 30; i++) { if (!blockVisible[i]) hidden.push(i); }
-  if (hidden.length === 0) return -1;
-  return hidden[Math.floor(Math.random() * hidden.length)];
+  return hidden.length === 0 ? -1 : hidden[Math.floor(Math.random() * hidden.length)];
 }
 
 function updateBright() {
@@ -377,49 +345,21 @@ function stopAnimation() {
 // ========== BOTÓN STOP ==========
 function pressStop() {
   if (!animRunning || waitingYesNo) return;
-
   stopAnimation();
   const idx = brightBlock;
-
   blockVisible[idx] = true;
   document.getElementById('block-' + idx)?.classList.add('hidden');
-
   const assignment = blockLetters[idx];
 
-  if (assignment === 'GOOD') {
-    addJokerBadge('⭐', 'green');
-    handleGoodJoker();
-    restartIfPossible();
-    return;
-  }
-  if (assignment === 'BAD') {
-    addJokerBadge('💀', 'red');
-    changeScore(-100);
-    showToast('💀 ¡Comodín Malo! -100 pts');
-    restartIfPossible();
-    return;
-  }
-  if (assignment === null) {
-    restartIfPossible();
-    return;
-  }
+  if (assignment === 'GOOD') { addJokerBadge('⭐','green'); handleGoodJoker(); restartIfPossible(); return; }
+  if (assignment === 'BAD')  { addJokerBadge('💀','red'); changeScore(-100); showToast('💀 ¡Comodín Malo! -100 pts'); restartIfPossible(); return; }
+  if (assignment === null)   { restartIfPossible(); return; }
 
   const letter = assignment;
-
-  if (correctLetters.has(letter)) {
-    restartIfPossible();
-    return;
-  }
-
+  if (correctLetters.has(letter)) { restartIfPossible(); return; }
   if (wrongLetters.has(letter)) {
-    if (currentGameName.includes(letter)) {
-      wrongLetters.delete(letter);
-      addCorrectLetter(letter);
-      checkWin();
-      if (!isGameOver()) restartIfPossible();
-    } else {
-      restartIfPossible();
-    }
+    if (currentGameName.includes(letter)) { wrongLetters.delete(letter); addCorrectLetter(letter); checkWin(); if (!isGameOver()) restartIfPossible(); }
+    else { restartIfPossible(); }
     return;
   }
 
@@ -432,10 +372,7 @@ function pressStop() {
 }
 
 function restartIfPossible() {
-  if (blockVisible.every(v => v)) {
-    document.getElementById('btn-stop').disabled = true;
-    return;
-  }
+  if (blockVisible.every(v => v)) { document.getElementById('btn-stop').disabled = true; return; }
   if (!guessMode) {
     startBrightAnimation();
     document.getElementById('btn-stop').disabled  = false;
@@ -448,22 +385,12 @@ function answerYesNo(userSaidYes) {
   if (!waitingYesNo) return;
   waitingYesNo = false;
   document.getElementById('letter-panel').classList.remove('visible');
-
   const letter = currentRevealedLetter;
   const inName = currentGameName.includes(letter);
-
-  if (userSaidYes && inName) {
-    addCorrectLetter(letter);
-  } else if (userSaidYes && !inName) {
-    changeScore(-100);
-    addWrongLetter(letter, 'red');
-  } else if (!userSaidYes && inName) {
-    changeScore(-100);
-    addCorrectLetter(letter, true);
-  } else {
-    addWrongLetter(letter, 'green');
-  }
-
+  if      ( userSaidYes &&  inName) { addCorrectLetter(letter); }
+  else if ( userSaidYes && !inName) { changeScore(-100); addWrongLetter(letter, 'red'); }
+  else if (!userSaidYes &&  inName) { changeScore(-100); addCorrectLetter(letter, true); }
+  else                              { addWrongLetter(letter, 'green'); }
   checkWin();
   if (!isGameOver()) restartIfPossible();
 }
@@ -475,10 +402,7 @@ function addCorrectLetter(letter, penalized = false) {
   let boxIdx = 0;
   for (let i = 0; i < currentGameName.length; i++) {
     if (currentGameName[i] === ' ') continue;
-    if (currentGameName[i] === letter) {
-      boxes[boxIdx].textContent = letter;
-      boxes[boxIdx].classList.add(penalized ? 'wrong' : 'correct');
-    }
+    if (currentGameName[i] === letter) { boxes[boxIdx].textContent = letter; boxes[boxIdx].classList.add(penalized ? 'wrong' : 'correct'); }
     boxIdx++;
   }
   const key = document.querySelector(`.qkey[data-letter="${letter}"]`);
@@ -504,12 +428,9 @@ function addJokerBadge(emoji, color) {
   disc.appendChild(span);
 }
 
-// ========== COMODÍN BUENO ==========
 function handleGoodJoker() {
   const remaining = [];
-  for (const c of currentGameName) {
-    if (c !== ' ' && !correctLetters.has(c)) remaining.push(c);
-  }
+  for (const c of currentGameName) { if (c !== ' ' && !correctLetters.has(c)) remaining.push(c); }
   if (remaining.length === 0) return;
   const pick = remaining[Math.floor(Math.random() * remaining.length)];
   addCorrectLetter(pick);
@@ -517,19 +438,13 @@ function handleGoodJoker() {
   checkWin();
 }
 
-// ========== PUNTAJE ==========
 function changeScore(delta) {
   score = Math.max(0, score + delta);
   const el = document.getElementById('score-display');
   el.textContent = score;
-  if (delta < 0) {
-    el.classList.remove('score-hit');
-    void el.offsetWidth;
-    el.classList.add('score-hit');
-  }
+  if (delta < 0) { el.classList.remove('score-hit'); void el.offsetWidth; el.classList.add('score-hit'); }
 }
 
-// ========== CUADROS DEL NOMBRE ==========
 function buildNameBoxes() {
   const container = document.getElementById('name-boxes');
   container.innerHTML = '';
@@ -540,35 +455,30 @@ function buildNameBoxes() {
   }
 }
 
-// ========== VICTORIA ==========
 function isGameOver() {
-  for (const c of currentGameName) {
-    if (c !== ' ' && !correctLetters.has(c)) return false;
-  }
+  for (const c of currentGameName) { if (c !== ' ' && !correctLetters.has(c)) return false; }
   return true;
 }
 
 function checkWin() {
   if (!isGameOver()) return;
   stopAnimation();
-  const continent = CONTINENTS[currentContinent];
-  savedScores[scoreKey(continent, currentCountryKey)] = score;
+  savedScores[scoreKey(CONTINENTS[currentContinent], currentCountryKey)] = score;
   saveScores();
   setTimeout(showWinModal, 500);
 }
 
 function showWinModal() {
   const continent = CONTINENTS[currentContinent];
-  document.getElementById('modal-flag').src            = IMAGES[continent][currentCountryKey];
-  document.getElementById('modal-country').textContent = DISPLAY_NAMES[currentCountryKey];
+  document.getElementById('modal-flag').src             = IMAGES[continent][currentCountryKey];
+  document.getElementById('modal-country').textContent  = DISPLAY_NAMES[currentCountryKey];
   document.getElementById('modal-score-val').textContent = score;
   document.getElementById('modal-overlay').classList.add('visible');
 }
 
 // ========== MODO ADIVINAR ==========
 function enterGuessMode() {
-  guessMode = true;
-  stopAnimation();
+  guessMode = true; stopAnimation();
   document.getElementById('btn-stop').disabled  = true;
   document.getElementById('btn-guess').disabled = true;
   document.getElementById('letter-panel').classList.remove('visible');
@@ -576,15 +486,12 @@ function enterGuessMode() {
 }
 
 function buildQwerty() {
-  const rowIds = ['qrow1', 'qrow2', 'qrow3'];
-  QWERTY_ROWS.forEach((row, ri) => {
-    const el = document.getElementById(rowIds[ri]);
+  ['qrow1','qrow2','qrow3'].forEach((rowId, ri) => {
+    const el = document.getElementById(rowId);
     el.innerHTML = '';
-    for (const letter of row) {
+    for (const letter of QWERTY_ROWS[ri]) {
       const btn = document.createElement('button');
-      btn.className = 'qkey';
-      btn.textContent = letter;
-      btn.dataset.letter = letter;
+      btn.className = 'qkey'; btn.textContent = letter; btn.dataset.letter = letter;
       btn.addEventListener('click', () => pressQKey(letter));
       el.appendChild(btn);
     }
@@ -592,21 +499,49 @@ function buildQwerty() {
 }
 
 function resetQwertyKeys() {
-  document.querySelectorAll('.qkey').forEach(k => {
-    k.disabled = false;
-    k.classList.remove('used-correct', 'used-wrong');
-  });
+  document.querySelectorAll('.qkey').forEach(k => { k.disabled = false; k.classList.remove('used-correct','used-wrong'); });
 }
 
 function pressQKey(letter) {
   if (correctLetters.has(letter) || wrongLetters.has(letter)) return;
-  if (currentGameName.includes(letter)) {
-    addCorrectLetter(letter);
-  } else {
-    changeScore(-100);
-    addWrongLetter(letter, 'red');
-  }
+  if (currentGameName.includes(letter)) { addCorrectLetter(letter); }
+  else { changeScore(-100); addWrongLetter(letter, 'red'); }
   checkWin();
+}
+
+// ========== PANTALLA 5: Elegir Continentes ==========
+const CONTINENT_META = {
+  AFRICA:  { emoji: '🌍', label: 'ÁFRICA' },
+  AMERICA: { emoji: '🌎', label: 'AMÉRICA' },
+  ASIA:    { emoji: '🌏', label: 'ASIA' },
+  EUROPA:  { emoji: '🏰', label: 'EUROPA' },
+  OCEANIA: { emoji: '🌊', label: 'OCEANÍA' },
+};
+
+function renderScreen5() {
+  const container = document.getElementById('continent-checkboxes');
+  container.innerHTML = '';
+  for (const c of CONTINENTS) {
+    const meta  = CONTINENT_META[c];
+    const count = COUNTRIES[c].length;
+    const isSelected = selectedContinents.has(c);
+    const div = document.createElement('div');
+    div.className = 'continent-option' + (isSelected ? ' selected' : '');
+    div.innerHTML = `
+      <span class="c-emoji">${meta.emoji}</span>
+      <span class="c-label">${meta.label}</span>
+      <span class="c-count">${count} países</span>
+      <span class="c-check">${isSelected ? '✓' : ''}</span>
+    `;
+    div.addEventListener('click', () => toggleContinent(c));
+    container.appendChild(div);
+  }
+}
+
+function toggleContinent(c) {
+  if (selectedContinents.has(c)) { selectedContinents.delete(c); }
+  else { selectedContinents.add(c); }
+  renderScreen5();
 }
 
 // ========== PANTALLA 4 ==========
@@ -615,18 +550,14 @@ function renderScreen4() {
   document.getElementById('continent-name').textContent = continent;
   const list = document.getElementById('countries-list');
   list.innerHTML = '';
-  const countries = [...COUNTRIES[continent]].sort();
-  countries.forEach((k, idx) => {
-    const key    = scoreKey(continent, k);
-    const played = savedScores[key] !== undefined;
-    const row    = document.createElement('div');
+  [...COUNTRIES[continent]].sort().forEach((k, idx) => {
+    const key = scoreKey(continent, k), played = savedScores[key] !== undefined;
+    const row = document.createElement('div');
     row.className = 'country-row';
     row.innerHTML = `
-      <span class="c-num">${idx + 1}.</span>
+      <span class="c-num">${idx+1}.</span>
       <span class="c-name">${played ? DISPLAY_NAMES[k] : '?????????'}</span>
-      ${played
-        ? `<span class="c-score">${savedScores[key]} pts</span>`
-        : `<span class="c-unknown">❓</span>`}
+      ${played ? `<span class="c-score">${savedScores[key]} pts</span>` : `<span class="c-unknown">❓</span>`}
     `;
     list.appendChild(row);
   });
@@ -640,7 +571,6 @@ function changeContinent(dir) {
 // ========== TOAST ==========
 function showToast(msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
+  t.textContent = msg; t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2500);
 }

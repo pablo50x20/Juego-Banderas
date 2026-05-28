@@ -53,6 +53,7 @@
   <div id="screen2" class="screen">
     <h2>&#127942; MENÚ PRINCIPAL</h2>
     <button class="btn btn-primary"   onclick="startGame()" style="min-width:240px;">&#127918; JUGAR</button>
+    <button class="btn btn-secondary" onclick="goScreen(5)" style="min-width:240px;">&#127758; ELEGIR CONTINENTES</button>
     <button class="btn btn-secondary" onclick="goScreen(4)" style="min-width:240px;">&#128203; ETAPAS</button>
     <button class="btn btn-outline"   onclick="goScreen(1)" style="min-width:240px;">&#128682; SALIR</button>
   </div>
@@ -124,6 +125,17 @@
     <div id="screen4-buttons">
       <button class="btn btn-primary" onclick="startGame()">&#127918; Jugar Siguiente Bandera</button>
       <button class="btn btn-outline" onclick="goScreen(2)">&#8617; Salir</button>
+    </div>
+  </div>
+
+  <!-- ========== PANTALLA 5: Elegir Continentes ========== -->
+  <div id="screen5" class="screen">
+    <h2>&#127758; ELEGIR CONTINENTES</h2>
+    <p id="s5-hint">Selecciona uno o más continentes para jugar</p>
+    <div id="continent-checkboxes"></div>
+    <div id="screen5-buttons">
+      <button class="btn btn-primary" onclick="startGameFiltered()">&#127918; JUGAR</button>
+      <button class="btn btn-outline" onclick="goScreen(2)">&#8617; SALIR</button>
     </div>
   </div>
 
