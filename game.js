@@ -346,6 +346,8 @@ function stopAnimation() {
   animRunning = false;
   if (brightInterval) clearInterval(brightInterval);
   brightInterval = null;
+  // Quitar el brillo de todos los bloques
+  document.querySelectorAll('.block').forEach(b => b.classList.remove('bright'));
 }
 
 // ========== BOTÓN STOP ==========
