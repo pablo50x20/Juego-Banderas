@@ -77,13 +77,21 @@
       </div>
     </div>
 
+    <!-- Cuadros del nombre del país -->
+    <div id="name-area">
+      <div id="name-boxes"></div>
+    </div>
+
+    <!-- Letras descartadas -->
+    <div id="discarded-letters"></div>
+
     <!-- Botones STOP y Quiero Adivinar -->
     <div id="action-row">
       <button id="btn-stop"  onclick="pressStop()">&#128721; STOP</button>
       <button id="btn-guess" onclick="enterGuessMode()">&#129300; Quiero Adivinar</button>
     </div>
 
-    <!-- Popup modal pregunta SÍ / NO -->
+    <!-- Popup panel pregunta SÍ / NO -->
     <div id="letter-panel">
       <div id="letter-popup">
         <div id="revealed-letter">A</div>
@@ -93,12 +101,6 @@
           <button class="btn-yesno" id="btn-no"  onclick="answerYesNo(false)">&#10060; NO</button>
         </div>
       </div>
-    </div>
-
-    <!-- Cuadros del nombre del país -->
-    <div id="name-area">
-      <div id="name-boxes"></div>
-      <div id="discarded-letters"></div>
     </div>
 
     <!-- Teclado QWERTY (modo adivinar) -->
@@ -123,7 +125,7 @@
     <div id="countries-list"></div>
 
     <div id="screen4-buttons">
-      <button class="btn btn-primary" onclick="startGame()">&#127918; Jugar Siguiente Bandera</button>
+      <button class="btn btn-primary" onclick="nextRound()">&#127918; Jugar Siguiente Bandera</button>
       <button class="btn btn-outline" onclick="goScreen(2)">&#8617; Salir</button>
     </div>
   </div>

@@ -204,6 +204,7 @@ let waitingYesNo = false, currentRevealedLetter = '', guessMode = false;
 let correctLetters = new Set(), wrongLetters = new Set();
 let savedScores = {};
 let selectedContinents = new Set(['AFRICA','AMERICA','ASIA','EUROPA','OCEANIA']); // todos por defecto
+let filteredMode = false; // true cuando se juega desde pantalla 5
 
 // ========== INICIO ==========
 window.addEventListener('load', () => {
@@ -244,26 +245,31 @@ function updateSoundUI() {
 // ========== INICIO PARTIDA ==========
 function startGame() {
   // Siempre usa todos los continentes (botón JUGAR de pantalla 2)
-  const all = [];
-  for (const c of CONTINENTS) for (const k of COUNTRIES[c]) all.push({ continent: c, key: k });
-  const unplayed = all.filter(x => savedScores[scoreKey(x.continent, x.key)] === undefined);
-  if (unplayed.length === 0) { showToast('🏆 ¡Completaste todas las banderas!'); goScreen(4); return; }
-  const pick = unplayed[Math.floor(Math.random() * unplayed.length)];
-  loadRound(pick.continent, pick.key);
+  filteredMode = false;
+  playFromPool(CONTINENTS);
 }
 
 function startGameFiltered() {
   // Usa solo los continentes seleccionados en pantalla 5
   if (selectedContinents.size === 0) { showToast('⚠️ Elige al menos un continente'); return; }
+  filteredMode = true;
+  playFromPool([...selectedContinents]);
+}
+
+function playFromPool(continentList) {
   const all = [];
-  for (const c of [...selectedContinents]) for (const k of COUNTRIES[c]) all.push({ continent: c, key: k });
+  for (const c of continentList) for (const k of COUNTRIES[c]) all.push({ continent: c, key: k });
   const unplayed = all.filter(x => savedScores[scoreKey(x.continent, x.key)] === undefined);
   if (unplayed.length === 0) { showToast('🏆 ¡Completaste todas las banderas!'); goScreen(4); return; }
   const pick = unplayed[Math.floor(Math.random() * unplayed.length)];
   loadRound(pick.continent, pick.key);
 }
 
-function nextFlag() { document.getElementById('modal-overlay').classList.remove('visible'); startGame(); }
+function nextFlag() {
+  document.getElementById('modal-overlay').classList.remove('visible');
+  if (filteredMode) startGameFiltered();
+  else startGame();
+}
 
 function loadRound(continent, countryKey) {
   currentContinent  = CONTINENTS.indexOf(continent);
@@ -566,6 +572,12 @@ function renderScreen4() {
 function changeContinent(dir) {
   currentContinent = (currentContinent + dir + CONTINENTS.length) % CONTINENTS.length;
   renderScreen4();
+}
+
+// Helper para botón "Jugar Siguiente Bandera" en pantalla 4
+function nextRound() {
+  if (filteredMode) startGameFiltered();
+  else startGame();
 }
 
 // ========== TOAST ==========
