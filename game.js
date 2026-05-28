@@ -404,7 +404,7 @@ function answerYesNo(userSaidYes) {
 // ========== LETRAS ==========
 function addCorrectLetter(letter, penalized = false) {
   correctLetters.add(letter);
-  const boxes = document.querySelectorAll('.letter-box:not(.space)');
+  const boxes = document.querySelectorAll('.word-group .letter-box');
   let boxIdx = 0;
   for (let i = 0; i < currentGameName.length; i++) {
     if (currentGameName[i] === ' ') continue;
@@ -454,10 +454,62 @@ function changeScore(delta) {
 function buildNameBoxes() {
   const container = document.getElementById('name-boxes');
   container.innerHTML = '';
-  for (const c of currentGameName) {
-    const box = document.createElement('div');
-    box.className = (c === ' ') ? 'letter-box space' : 'letter-box';
-    container.appendChild(box);
+
+  const words = currentGameName.split(' ');
+  const totalLetters = currentGameName.replace(/ /g, '').length;
+
+  // Size class based on total letters
+  const sizeClass = totalLetters >= 16 ? 'size-sm' : totalLetters >= 12 ? 'size-md' : '';
+
+  // Multi-line: total letters > 11 AND more than one word
+  const multiLine = totalLetters > 11 && words.length > 1;
+
+  if (multiLine) {
+    // Group joiners with the word that follows them
+    const JOINERS = new Set(['Y','DE','DEL','EL','LA','LAS','SAN','SANTA']);
+    const lineGroups = [];
+    let i = 0;
+    while (i < words.length) {
+      if (JOINERS.has(words[i]) && i + 1 < words.length) {
+        lineGroups.push(words[i] + ' ' + words[i + 1]);
+        i += 2;
+      } else {
+        lineGroups.push(words[i]);
+        i++;
+      }
+    }
+    lineGroups.forEach(lineText => {
+      const group = document.createElement('div');
+      group.className = 'word-group' + (sizeClass ? ' ' + sizeClass : '');
+      for (const c of lineText) {
+        if (c === ' ') {
+          const sp = document.createElement('div');
+          sp.className = 'word-space';
+          group.appendChild(sp);
+        } else {
+          const box = document.createElement('div');
+          box.className = 'letter-box';
+          group.appendChild(box);
+        }
+      }
+      container.appendChild(group);
+    });
+  } else {
+    // Single row (single word, or short multi-word like COSTA RICA)
+    const group = document.createElement('div');
+    group.className = 'word-group' + (sizeClass ? ' ' + sizeClass : '');
+    for (const c of currentGameName) {
+      if (c === ' ') {
+        const sp = document.createElement('div');
+        sp.className = 'word-space';
+        group.appendChild(sp);
+      } else {
+        const box = document.createElement('div');
+        box.className = 'letter-box';
+        group.appendChild(box);
+      }
+    }
+    container.appendChild(group);
   }
 }
 
@@ -550,10 +602,23 @@ function toggleContinent(c) {
   renderScreen5();
 }
 
+function selectAllContinents() {
+  CONTINENTS.forEach(c => selectedContinents.add(c));
+  renderScreen5();
+}
+
+function clearAllContinents() {
+  selectedContinents.clear();
+  renderScreen5();
+}
+
 // ========== PANTALLA 4 ==========
 function renderScreen4() {
   const continent = CONTINENTS[currentContinent];
   document.getElementById('continent-name').textContent = continent;
+  const total = COUNTRIES[continent].length;
+  const played = COUNTRIES[continent].filter(k => savedScores[scoreKey(continent, k)] !== undefined).length;
+  document.getElementById('continent-progress').textContent = played + ' / ' + total + ' países';
   const list = document.getElementById('countries-list');
   list.innerHTML = '';
   [...COUNTRIES[continent]].sort().forEach((k, idx) => {

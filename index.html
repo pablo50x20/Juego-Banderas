@@ -118,7 +118,10 @@
 
     <div id="continent-nav">
       <button class="nav-arrow" onclick="changeContinent(-1)">&#9664;</button>
-      <div id="continent-name">AMERICA</div>
+      <div id="continent-info">
+        <div id="continent-name">AMERICA</div>
+        <div id="continent-progress"></div>
+      </div>
       <button class="nav-arrow" onclick="changeContinent(1)">&#9654;</button>
     </div>
 
@@ -134,6 +137,10 @@
   <div id="screen5" class="screen">
     <h2>&#127758; ELEGIR CONTINENTES</h2>
     <p id="s5-hint">Selecciona uno o más continentes para jugar</p>
+    <div id="s5-top-actions">
+      <button class="btn-text-action" onclick="selectAllContinents()">&#9989; Seleccionar todo</button>
+      <button class="btn-text-action" onclick="clearAllContinents()">&#10060; Borrar todo</button>
+    </div>
     <div id="continent-checkboxes"></div>
     <div id="screen5-buttons">
       <button class="btn btn-primary" onclick="startGameFiltered()">&#127918; JUGAR</button>
