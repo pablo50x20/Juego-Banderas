@@ -421,10 +421,11 @@ body::before {
   display: none;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  padding: 10px 6px 12px;
+  gap: 5px;
+  padding: 8px 4px 10px;
   flex-shrink: 0;
   width: 100%;
+  box-sizing: border-box;
   background: linear-gradient(to top, rgba(10,22,40,0.95), rgba(10,22,40,0.7));
   border-top: 1px solid rgba(255,255,255,0.08);
   position: fixed;
@@ -434,12 +435,15 @@ body::before {
   z-index: 100;
 }
 #qwerty-panel.visible { display: flex; }
-.qwerty-row { display: flex; gap: 6px; justify-content: center; }
+/* Row fills full width, keys expand equally */
+.qwerty-row { display: flex; gap: 3px; justify-content: center; width: 100%; padding: 0 4px; box-sizing: border-box; }
 .qkey {
   font-family: 'Bangers', cursive;
-  font-size: 20px;
-  width: 42px; height: 48px;
-  border-radius: 8px;
+  font-size: clamp(14px, 4vw, 22px);
+  flex: 1;
+  max-width: 48px;
+  height: clamp(40px, 11vw, 52px);
+  border-radius: 7px;
   border: none;
   background: rgba(255,255,255,0.18);
   color: white;
