@@ -468,41 +468,27 @@ function buildNameBoxes() {
   // Multi-line: total letters > 11 AND more than one word
   const multiLine = totalLetters > 11 && words.length > 1;
 
-  if (multiLine) {
-    // Group joiners with the word that follows them
-    const JOINERS = new Set(['Y','DE','DEL','EL','LA','LAS','SAN','SANTA']);
-    const lineGroups = [];
-    let i = 0;
-    while (i < words.length) {
-      if (JOINERS.has(words[i]) && i + 1 < words.length) {
-        lineGroups.push(words[i] + ' ' + words[i + 1]);
-        i += 2;
-      } else {
-        lineGroups.push(words[i]);
-        i++;
-      }
+  // Find optimal 2-line split: minimize difference in letter count per line
+  function optimalSplit(words) {
+    const n = words.length;
+    let best = null, bestScore = Infinity;
+    for (let split = 1; split < n; split++) {
+      const line1 = words.slice(0, split).join(' ');
+      const line2 = words.slice(split).join(' ');
+      const len1 = line1.replace(/ /g, '').length;
+      const len2 = line2.replace(/ /g, '').length;
+      const score = Math.abs(len1 - len2) + Math.max(0, 3 - Math.min(len1, len2)) * 2;
+      if (score < bestScore) { bestScore = score; best = [line1, line2]; }
     }
-    lineGroups.forEach(lineText => {
-      const group = document.createElement('div');
-      group.className = 'word-group' + (sizeClass ? ' ' + sizeClass : '');
-      for (const c of lineText) {
-        if (c === ' ') {
-          const sp = document.createElement('div');
-          sp.className = 'word-space';
-          group.appendChild(sp);
-        } else {
-          const box = document.createElement('div');
-          box.className = 'letter-box';
-          group.appendChild(box);
-        }
-      }
-      container.appendChild(group);
-    });
-  } else {
-    // Single row (single word, or short multi-word like COSTA RICA)
+    return best;
+  }
+
+  const lineGroups = multiLine ? optimalSplit(words) : [currentGameName];
+
+  lineGroups.forEach(lineText => {
     const group = document.createElement('div');
     group.className = 'word-group' + (sizeClass ? ' ' + sizeClass : '');
-    for (const c of currentGameName) {
+    for (const c of lineText) {
       if (c === ' ') {
         const sp = document.createElement('div');
         sp.className = 'word-space';
@@ -514,7 +500,7 @@ function buildNameBoxes() {
       }
     }
     container.appendChild(group);
-  }
+  });
 }
 
 function isGameOver() {
