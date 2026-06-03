@@ -160,7 +160,7 @@ body::before {
 /* ========== SCREEN 3 ========== */
 #screen3 {
   justify-content: flex-start;
-  padding: 10px 16px;
+  padding: 4px 16px;
   gap: 0;
 }
 
@@ -170,7 +170,7 @@ body::before {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 6px 10px 2px;
+  padding: 2px 10px 0;
   flex-shrink: 0;
 }
 #score-display {
@@ -190,7 +190,7 @@ body::before {
   letter-spacing: 2px;
   text-transform: uppercase;
   flex-shrink: 0;
-  padding: 0 0 2px;
+  padding: 0;
 }
 #continent-label span { color: var(--gold); font-weight: 800; }
 .score-hit { animation: score-flash .4s; }
@@ -205,7 +205,7 @@ body::before {
   width: 100%;
   flex: 1 1 0;
   max-height: 40vh;
-  margin: 2px 0 0;
+  margin: 1px 0 0;
   display: flex;
   align-items: center;
   justify-content: center;
