@@ -280,6 +280,7 @@ function loadRound(continent, countryKey) {
   guessMode = false; waitingYesNo = false; currentRevealedLetter = '';
 
   document.getElementById('flag-img').src = IMAGES[continent][countryKey];
+  document.getElementById('continent-label-value').textContent = continent;
   buildBlocks(); buildNameBoxes();
   document.getElementById('score-display').textContent = '1000';
   document.getElementById('letter-panel').classList.remove('visible');
@@ -626,12 +627,14 @@ function renderScreen4() {
   [...COUNTRIES[continent]].sort().forEach((k, idx) => {
     const key = scoreKey(continent, k), played = savedScores[key] !== undefined;
     const row = document.createElement('div');
-    row.className = 'country-row';
-    row.innerHTML = `
-      <span class="c-num">${idx+1}.</span>
-      <span class="c-name">${played ? DISPLAY_NAMES[k] : '?????????'}</span>
-      ${played ? `<span class="c-score">${savedScores[key]} pts</span>` : `<span class="c-unknown">❓</span>`}
-    `;
+    row.className = 'country-row ' + (played ? 'played' : 'locked');
+    row.innerHTML = played
+      ? `<span class="c-num">${idx+1}.</span>
+         <span class="c-name">${DISPLAY_NAMES[k]}</span>
+         <span class="c-score">${savedScores[key]} pts</span>`
+      : `<span class="c-num">${idx+1}.</span>
+         <span class="c-lock" style="flex:1; text-align:center;">🔒</span>`;
+    if (played) row.addEventListener('click', () => showCountryInfo(k, continent));
     list.appendChild(row);
   });
 }
@@ -645,6 +648,12 @@ function changeContinent(dir) {
 function nextRound() {
   if (filteredMode) startGameFiltered();
   else startGame();
+}
+
+// ========== INFO DE PAÍS (placeholder para contenido futuro) ==========
+function showCountryInfo(countryKey, continent) {
+  // Se completará con información del país más adelante
+  showToast('ℹ️ ' + DISPLAY_NAMES[countryKey] + ' — ' + savedScores[scoreKey(continent, countryKey)] + ' pts');
 }
 
 // ========== TOAST ==========

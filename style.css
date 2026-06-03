@@ -170,7 +170,7 @@ body::before {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 8px 10px 6px;
+  padding: 6px 10px 2px;
   flex-shrink: 0;
 }
 #score-display {
@@ -182,6 +182,17 @@ body::before {
   text-align: center;
 }
 #score-label { font-size: 13px; color: rgba(255,255,255,0.5); letter-spacing: 2px; text-align: center; }
+/* Continent label between score and flag */
+#continent-label {
+  text-align: center;
+  font-size: 13px;
+  color: rgba(255,255,255,0.6);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+  padding: 0 0 2px;
+}
+#continent-label span { color: var(--gold); font-weight: 800; }
 .score-hit { animation: score-flash .4s; }
 @keyframes score-flash {
   0%,100% { color: var(--gold); }
@@ -193,8 +204,8 @@ body::before {
   position: relative;
   width: 100%;
   flex: 1 1 0;
-  max-height: 44vh;
-  margin: 4px 0;
+  max-height: 40vh;
+  margin: 2px 0 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -205,13 +216,13 @@ body::before {
   position: relative;
   display: inline-block;
   max-width: 560px;
-  max-height: 44vh;
+  max-height: 40vh;
   line-height: 0;
 }
 #flag-img {
   display: block;
   max-width: 560px;
-  max-height: 44vh;
+  max-height: 40vh;
   width: auto;
   height: auto;
   border-radius: 8px;
@@ -341,7 +352,7 @@ body::before {
   flex-direction: column;
   align-items: center;
   flex-shrink: 0;
-  padding: 4px 0;
+  padding: 3px 0 0;
 }
 #name-boxes {
   display: flex;
@@ -355,34 +366,46 @@ body::before {
   justify-content: center;
 }
 .letter-box {
-  width: 34px; height: 34px;
+  width: 38px; height: 38px;
   border: 2px solid rgba(255,255,255,0.4);
   border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: 'Bangers', cursive;
-  font-size: 20px;
+  font-size: 23px;
   letter-spacing: 1px;
   background: rgba(255,255,255,0.07);
   transition: background .3s;
 }
-/* Tamaño mediano: 7-9 letras por palabra */
-.word-group.size-md .letter-box { width: 28px; height: 28px; font-size: 16px; }
-/* Tamaño pequeño: 10+ letras por palabra */
-.word-group.size-sm .letter-box { width: 22px; height: 22px; font-size: 13px; border-radius: 4px; }
+/* Mediano: nombres 12-15 letras */
+.word-group.size-md .letter-box { width: 30px; height: 30px; font-size: 17px; }
+/* Pequeño: nombres 16+ letras */
+.word-group.size-sm .letter-box { width: 24px; height: 24px; font-size: 14px; border-radius: 4px; }
 .letter-box.correct { background: var(--green); border-color: var(--green); }
 .letter-box.wrong   { background: var(--red);   border-color: var(--red); }
 .word-space { width: 10px; flex-shrink: 0; }
 
+#discarded-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  padding: 2px 8px;
+}
+#discarded-label {
+  font-size: 12px;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
 #discarded-letters {
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
   justify-content: center;
-  min-height: 26px;
-  padding: 2px 8px;
-  flex-shrink: 0;
+  min-height: 22px;
 }
 .disc-letter {
   font-family: 'Bangers', cursive;
@@ -398,24 +421,32 @@ body::before {
   display: none;
   flex-direction: column;
   align-items: center;
-  gap: 5px;
-  padding: 6px 0;
+  gap: 6px;
+  padding: 10px 6px 12px;
   flex-shrink: 0;
   width: 100%;
+  background: linear-gradient(to top, rgba(10,22,40,0.95), rgba(10,22,40,0.7));
+  border-top: 1px solid rgba(255,255,255,0.08);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
 }
 #qwerty-panel.visible { display: flex; }
-.qwerty-row { display: flex; gap: 4px; justify-content: center; }
+.qwerty-row { display: flex; gap: 6px; justify-content: center; }
 .qkey {
   font-family: 'Bangers', cursive;
-  font-size: 16px;
-  width: 34px; height: 36px;
-  border-radius: 6px;
+  font-size: 20px;
+  width: 42px; height: 48px;
+  border-radius: 8px;
   border: none;
-  background: rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.18);
   color: white;
   cursor: pointer;
   transition: transform .1s, background .15s;
   display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 3px 0 rgba(0,0,0,0.3);
 }
 .qkey:hover:not(:disabled) { background: rgba(255,215,0,0.3); transform: translateY(-2px); }
 .qkey:disabled { opacity: 0.3; cursor: default; transform: none; }
@@ -538,11 +569,19 @@ body::before {
   padding: 10px 18px;
   font-size: 16px;
   font-weight: 700;
+  transition: background .2s;
+}
+.country-row.played {
+  cursor: pointer;
+}
+.country-row.played:hover { background: rgba(255,215,0,0.12); border-color: rgba(255,215,0,0.3); }
+.country-row.locked {
+  opacity: 0.5;
 }
 .country-row .c-num     { color: rgba(255,255,255,0.4); font-size: 13px; margin-right: 10px; }
 .country-row .c-name    { flex: 1; }
 .country-row .c-score   { color: var(--gold); font-family: 'Bangers', cursive; font-size: 20px; letter-spacing: 1px; }
-.country-row .c-unknown { color: rgba(255,255,255,0.3); font-size: 22px; }
+.country-row .c-lock    { font-size: 18px; color: rgba(255,255,255,0.3); }
 #screen4-buttons { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 8px; }
 
 /* Toast */
