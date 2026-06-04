@@ -139,6 +139,24 @@
     </div>
   </div>
 
+  <!-- MODAL INFO DE PAÍS -->
+  <div id="country-info-overlay">
+    <div id="country-info-box">
+      <button id="country-info-close" onclick="closeCountryInfo()">&#10005;</button>
+      <img id="ci-flag" src="" alt="Bandera">
+      <div id="ci-name"></div>
+      <div id="ci-data">
+        <div class="ci-row"><span class="ci-label">&#127968; Capital</span><span class="ci-value" id="ci-capital"></span></div>
+        <div class="ci-row"><span class="ci-label">&#128172; Idioma oficial</span><span class="ci-value" id="ci-idioma"></span></div>
+        <div class="ci-row"><span class="ci-label">&#128506; Superficie</span><span class="ci-value" id="ci-superficie"></span></div>
+        <div class="ci-row"><span class="ci-label">&#128101; Población</span><span class="ci-value" id="ci-poblacion"></span></div>
+        <div class="ci-row"><span class="ci-label">&#128176; Moneda</span><span class="ci-value" id="ci-moneda"></span></div>
+        <div class="ci-row"><span class="ci-label">&#128222; Prefijo</span><span class="ci-value" id="ci-prefijo"></span></div>
+      </div>
+      <div id="ci-score-row">Puntaje obtenido: <span id="ci-score"></span></div>
+    </div>
+  </div>
+
   <!-- ========== PANTALLA 5: Elegir Continentes ========== -->
   <div id="screen5" class="screen">
     <h2>&#127758; ELEGIR CONTINENTES</h2>
@@ -156,6 +174,7 @@
 
   <!-- Scripts -->
   <script src="images_data.js"></script>
+  <script src="countries_data.js"></script>
   <script src="game.js"></script>
 
 </body>

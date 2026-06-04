@@ -636,10 +636,24 @@ function nextRound() {
   else startGame();
 }
 
-// ========== INFO DE PAÍS (placeholder para contenido futuro) ==========
+// ========== INFO DE PAÍS ==========
 function showCountryInfo(countryKey, continent) {
-  // Se completará con información del país más adelante
-  showToast('ℹ️ ' + DISPLAY_NAMES[countryKey] + ' — ' + savedScores[scoreKey(continent, countryKey)] + ' pts');
+  const info = COUNTRY_INFO[countryKey];
+  if (!info) return;
+  document.getElementById('ci-flag').src     = IMAGES[continent][countryKey];
+  document.getElementById('ci-name').textContent      = DISPLAY_NAMES[countryKey];
+  document.getElementById('ci-capital').textContent   = info.capital;
+  document.getElementById('ci-idioma').textContent    = info.idioma;
+  document.getElementById('ci-superficie').textContent = info.superficie + ' km²';
+  document.getElementById('ci-poblacion').textContent = info.poblacion;
+  document.getElementById('ci-moneda').textContent    = info.moneda;
+  document.getElementById('ci-prefijo').textContent   = info.prefijo;
+  document.getElementById('ci-score').textContent     = savedScores[scoreKey(continent, countryKey)] + ' pts';
+  document.getElementById('country-info-overlay').classList.add('visible');
+}
+
+function closeCountryInfo() {
+  document.getElementById('country-info-overlay').classList.remove('visible');
 }
 
 // ========== TOAST ==========
