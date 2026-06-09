@@ -165,6 +165,10 @@ body::before {
   height: 100vh;
   overflow: hidden;
 }
+#screen3.guess-mode {
+  overflow-y: auto;
+  justify-content: flex-start;
+}
 
 /* Score bar */
 #score-bar {
@@ -441,11 +445,7 @@ body::before {
   box-sizing: border-box;
   background: linear-gradient(to top, rgba(10,22,40,0.95), rgba(10,22,40,0.7));
   border-top: 1px solid rgba(255,255,255,0.08);
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 100;
+  margin-top: auto;
 }
 #qwerty-panel.visible { display: flex; }
 /* Row fills full width, keys expand equally */

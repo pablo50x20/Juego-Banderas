@@ -289,6 +289,7 @@ function loadRound(continent, countryKey) {
   document.getElementById('action-row').style.display = '';
   document.getElementById('btn-stop').disabled  = false;
   document.getElementById('btn-guess').disabled = false;
+  document.getElementById('screen3').classList.remove('guess-mode');
   resetQwertyKeys();
   startBrightAnimation();
   goScreen(3);
@@ -535,6 +536,7 @@ function enterGuessMode() {
   document.getElementById('action-row').style.display = 'none';
   document.getElementById('letter-panel').classList.remove('visible');
   document.getElementById('qwerty-panel').classList.add('visible');
+  document.getElementById('screen3').classList.add('guess-mode');
 }
 
 function buildQwerty() {
