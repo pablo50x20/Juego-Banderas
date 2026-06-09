@@ -23,7 +23,7 @@ const COUNTRIES = {
   ],
   ASIA: [
     'AFGANISTAN','ARABIA_SAUDITA','ARMENIA','AZERBAIYAN','BANGLADESH','BAREIN',
-    'BIRMANIA','BRUNEI','BUTAN','CAMBOYA','CATAR','CHINA','CHIPRE',
+    'BIRMANIA','BRUNEI','BUTAN','CAMBOYA','CATAR','CHINA',
     'COREA_DEL_NORTE','COREA_DEL_SUR','EMIRATOS_ARABES_UNIDOS','FILIPINAS',
     'GEORGIA','INDIA','INDONESIA','IRAN','IRAK','ISRAEL','JAPON','JORDANIA',
     'KAZAJISTAN','KIRGUISTAN','KUWAIT','LAOS','LIBANO','MALASIA','MALDIVAS',
@@ -32,7 +32,7 @@ const COUNTRIES = {
     'UZBEKISTAN','VIETNAM','YEMEN'
   ],
   EUROPA: [
-    'ALBANIA','ALEMANIA','ANDORRA','AUSTRIA','BELGICA','BIELORRUSIA',
+    'ALBANIA','ALEMANIA','ANDORRA','AUSTRIA','BELGICA','BIELORRUSIA','CHIPRE',
     'BOSNIA_Y_HERZEGOVINA','BULGARIA','CIUDAD_DEL_VATICANO','CROACIA',
     'DINAMARCA','ESCOCIA','ESLOVAQUIA','ESLOVENIA','ESPANA','ESTONIA',
     'FINLANDIA','FRANCIA','GALES','GRECIA','HUNGRIA','INGLATERRA','IRLANDA',
@@ -408,10 +408,10 @@ function answerYesNo(userSaidYes) {
 // ========== LETRAS ==========
 function addCorrectLetter(letter, penalized = false) {
   correctLetters.add(letter);
-  const boxes = document.querySelectorAll('.word-group .letter-box');
+  const boxes = document.querySelectorAll('.word-group .letter-box:not(.hyphen)');
   let boxIdx = 0;
   for (let i = 0; i < currentGameName.length; i++) {
-    if (currentGameName[i] === ' ') continue;
+    if (currentGameName[i] === ' ' || currentGameName[i] === '-') continue;
     if (currentGameName[i] === letter) { boxes[boxIdx].textContent = letter; boxes[boxIdx].classList.add(penalized ? 'wrong' : 'correct'); }
     boxIdx++;
   }
@@ -440,7 +440,7 @@ function addJokerBadge(emoji, color) {
 
 function handleGoodJoker() {
   const remaining = [];
-  for (const c of currentGameName) { if (c !== ' ' && !correctLetters.has(c)) remaining.push(c); }
+  for (const c of currentGameName) { if (c !== ' ' && c !== '-' && !correctLetters.has(c)) remaining.push(c); }
   if (remaining.length === 0) return;
   const pick = remaining[Math.floor(Math.random() * remaining.length)];
   addCorrectLetter(pick);
@@ -466,7 +466,7 @@ function buildNameBoxes() {
   const sizeClass = totalLetters >= 16 ? 'size-sm' : totalLetters >= 12 ? 'size-md' : '';
 
   // Multi-line: total letters > 11 AND more than one word
-  const multiLine = totalLetters > 11 && words.length > 1;
+  const multiLine = totalLetters >= 10 && words.length > 1;
 
   // Find optimal 2-line split: minimize difference in letter count per line
   function optimalSplit(words) {
@@ -493,6 +493,11 @@ function buildNameBoxes() {
         const sp = document.createElement('div');
         sp.className = 'word-space';
         group.appendChild(sp);
+      } else if (c === '-') {
+        const hyph = document.createElement('div');
+        hyph.className = 'letter-box hyphen';
+        hyph.textContent = '-';
+        group.appendChild(hyph);
       } else {
         const box = document.createElement('div');
         box.className = 'letter-box';
@@ -504,7 +509,7 @@ function buildNameBoxes() {
 }
 
 function isGameOver() {
-  for (const c of currentGameName) { if (c !== ' ' && !correctLetters.has(c)) return false; }
+  for (const c of currentGameName) { if (c !== ' ' && c !== '-' && !correctLetters.has(c)) return false; }
   return true;
 }
 
@@ -551,9 +556,26 @@ function resetQwertyKeys() {
 
 function pressQKey(letter) {
   if (correctLetters.has(letter) || wrongLetters.has(letter)) return;
-  if (currentGameName.includes(letter)) { addCorrectLetter(letter); }
-  else { changeScore(-100); addWrongLetter(letter, 'red'); }
+  if (currentGameName.includes(letter)) {
+    addCorrectLetter(letter);
+    revealBlockForLetter(letter);
+  } else {
+    changeScore(-100);
+    addWrongLetter(letter, 'red');
+  }
   checkWin();
+}
+
+function revealBlockForLetter(letter) {
+  // Find a hidden block assigned to this letter and remove it
+  for (let i = 0; i < blockLetters.length; i++) {
+    if (blockLetters[i] === letter && !blockVisible[i]) {
+      blockVisible[i] = true;
+      const el = document.getElementById('block-' + i);
+      if (el) el.classList.add('hidden');
+      break;
+    }
+  }
 }
 
 // ========== PANTALLA 5: Elegir Continentes ==========

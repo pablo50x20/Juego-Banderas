@@ -396,6 +396,7 @@ body::before {
 .word-group.size-sm .letter-box { width: 24px; height: 24px; font-size: 14px; border-radius: 4px; }
 .letter-box.correct { background: var(--green); border-color: var(--green); }
 .letter-box.wrong   { background: var(--red);   border-color: var(--red); }
+.letter-box.hyphen  { background: transparent; border-color: rgba(255,255,255,0.25); color: rgba(255,255,255,0.6); cursor: default; }
 .word-space { width: 10px; flex-shrink: 0; }
 
 #discarded-area {
