@@ -461,12 +461,13 @@ function buildNameBoxes() {
   container.innerHTML = '';
 
   const words = currentGameName.split(' ');
-  const totalLetters = currentGameName.replace(/ /g, '').length;
+  // Count only real letters (exclude hyphen and space)
+  const totalLetters = currentGameName.replace(/[ -]/g, '').length;
 
   // Size class based on total letters
   const sizeClass = totalLetters >= 16 ? 'size-sm' : totalLetters >= 12 ? 'size-md' : '';
 
-  // Multi-line: total letters > 11 AND more than one word
+  // Multi-line: total letters >= 10 AND more than one word (split by space)
   const multiLine = totalLetters >= 10 && words.length > 1;
 
   // Find optimal 2-line split: minimize difference in letter count per line
