@@ -470,9 +470,29 @@ function buildNameBoxes() {
   // Multi-line: total letters >= 10 AND more than one word (split by space)
   const multiLine = totalLetters >= 10 && words.length > 1;
 
-  // Find optimal 2-line split: minimize difference in letter count per line
-  function optimalSplit(words) {
+  // Split into lines optimally
+  function splitIntoLines(words) {
     const n = words.length;
+    // Names with 4+ words and 20+ letters: try 3 lines
+    const totalL = words.join('').length;
+    if (n >= 4 && totalL >= 20) {
+      // Try all ways to split into 3 groups
+      let best3 = null, bestScore3 = Infinity;
+      for (let a = 1; a < n - 1; a++) {
+        for (let b = a + 1; b < n; b++) {
+          const l1 = words.slice(0, a).join(' ').replace(/ /g,'').length;
+          const l2 = words.slice(a, b).join(' ').replace(/ /g,'').length;
+          const l3 = words.slice(b).join(' ').replace(/ /g,'').length;
+          const score = Math.max(l1,l2,l3) - Math.min(l1,l2,l3);
+          if (score < bestScore3) {
+            bestScore3 = score;
+            best3 = [words.slice(0,a).join(' '), words.slice(a,b).join(' '), words.slice(b).join(' ')];
+          }
+        }
+      }
+      return best3;
+    }
+    // Default: 2 lines
     let best = null, bestScore = Infinity;
     for (let split = 1; split < n; split++) {
       const line1 = words.slice(0, split).join(' ');
@@ -485,7 +505,7 @@ function buildNameBoxes() {
     return best;
   }
 
-  const lineGroups = multiLine ? optimalSplit(words) : [currentGameName];
+  const lineGroups = multiLine ? splitIntoLines(words) : [currentGameName];
 
   lineGroups.forEach(lineText => {
     const group = document.createElement('div');
