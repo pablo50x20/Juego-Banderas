@@ -269,7 +269,7 @@ body::before {
   gap: 12px;
   align-items: center;
   justify-content: center;
-  padding: 3px 0;
+  padding: 8px 0 4px;
   flex-shrink: 0;
 }
 #btn-stop {
@@ -407,7 +407,7 @@ body::before {
   align-items: center;
   gap: 3px;
   flex-shrink: 0;
-  padding: 2px 8px;
+  padding: 6px 8px 2px;
 }
 #discarded-label {
   font-size: 12px;
@@ -421,6 +421,8 @@ body::before {
   gap: 5px;
   justify-content: center;
   min-height: 22px;
+  max-height: 58px;
+  overflow: hidden;
 }
 .disc-letter {
   font-family: 'Bangers', cursive;
@@ -437,14 +439,13 @@ body::before {
   flex-direction: column;
   align-items: center;
   gap: 5px;
-  padding: 8px 4px env(safe-area-inset-bottom, 14px);
+  padding: 8px 4px 8px;
   flex-shrink: 0;
   width: 100%;
   box-sizing: border-box;
   background: linear-gradient(to top, rgba(10,22,40,0.95), rgba(10,22,40,0.7));
   border-top: 1px solid rgba(255,255,255,0.08);
-  margin-top: auto;
-  margin-bottom: 52px;
+  margin-top: 6px;
 }
 #qwerty-panel.visible { display: flex; }
 /* Row fills full width, keys expand equally */
