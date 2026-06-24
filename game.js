@@ -249,8 +249,11 @@ function startGame() {
   playFromPool(CONTINENTS);
 }
 
+function isContinentCompleted(c) {
+  return COUNTRIES[c].every(k => savedScores[scoreKey(c, k)] !== undefined);
+}
+
 function startGameFiltered() {
-  // Usa solo los continentes seleccionados en pantalla 5
   if (selectedContinents.size === 0) { showToast('⚠️ Elige al menos un continente'); return; }
   filteredMode = true;
   playFromPool([...selectedContinents]);
@@ -260,7 +263,22 @@ function playFromPool(continentList) {
   const all = [];
   for (const c of continentList) for (const k of COUNTRIES[c]) all.push({ continent: c, key: k });
   const unplayed = all.filter(x => savedScores[scoreKey(x.continent, x.key)] === undefined);
-  if (unplayed.length === 0) { showToast('🏆 ¡Completaste todas las banderas!'); goScreen(4); return; }
+  if (unplayed.length === 0) {
+    if (filteredMode) {
+      // Check if a single continent was selected and just completed
+      const completedNow = [...selectedContinents].find(c => isContinentCompleted(c));
+      if (completedNow) {
+        showContinentCompleteModal(completedNow);
+      } else {
+        showToast('🏆 ¡Completaste todos los países seleccionados!');
+        goScreen(4);
+      }
+    } else {
+      showToast('🏆 ¡Completaste todas las banderas!');
+      goScreen(4);
+    }
+    return;
+  }
   const pick = unplayed[Math.floor(Math.random() * unplayed.length)];
   loadRound(pick.continent, pick.key);
 }
@@ -614,23 +632,25 @@ function renderScreen5() {
   const container = document.getElementById('continent-checkboxes');
   container.innerHTML = '';
   for (const c of CONTINENTS) {
-    const meta  = CONTINENT_META[c];
-    const count = COUNTRIES[c].length;
-    const isSelected = selectedContinents.has(c);
+    const meta      = CONTINENT_META[c];
+    const count     = COUNTRIES[c].length;
+    const completed = isContinentCompleted(c);
+    const isSelected = !completed && selectedContinents.has(c);
     const div = document.createElement('div');
-    div.className = 'continent-option' + (isSelected ? ' selected' : '');
+    div.className = 'continent-option' + (isSelected ? ' selected' : '') + (completed ? ' completed' : '');
     div.innerHTML = `
       <span class="c-emoji">${meta.emoji}</span>
       <span class="c-label">${meta.label}</span>
-      <span class="c-count">${count} países</span>
-      <span class="c-check">${isSelected ? '✓' : ''}</span>
+      <span class="c-count">${completed ? '✅ Completado' : count + ' países'}</span>
+      <span class="c-check">${completed ? '🏆' : isSelected ? '✓' : ''}</span>
     `;
-    div.addEventListener('click', () => toggleContinent(c));
+    if (!completed) div.addEventListener('click', () => toggleContinent(c));
     container.appendChild(div);
   }
 }
 
 function toggleContinent(c) {
+  if (isContinentCompleted(c)) return;
   if (selectedContinents.has(c)) { selectedContinents.delete(c); }
   else { selectedContinents.add(c); }
   renderScreen5();
@@ -699,6 +719,33 @@ function showCountryInfo(countryKey, continent) {
 
 function closeCountryInfo() {
   document.getElementById('country-info-overlay').classList.remove('visible');
+}
+
+// ========== MODAL CONTINENTE COMPLETADO ==========
+function showContinentCompleteModal(continent) {
+  const meta = CONTINENT_META[continent];
+  document.getElementById('cc-continent-name').textContent = meta.emoji + ' ' + meta.label;
+  document.getElementById('continent-complete-overlay').classList.add('visible');
+}
+
+function closeContinentComplete() {
+  document.getElementById('continent-complete-overlay').classList.remove('visible');
+}
+
+function ccChooseContinent() {
+  closeContinentComplete();
+  goScreen(5);
+}
+
+function ccRandomFlag() {
+  closeContinentComplete();
+  filteredMode = false;
+  startGame();
+}
+
+function ccExit() {
+  closeContinentComplete();
+  goScreen(2);
 }
 
 // ========== TOAST ==========

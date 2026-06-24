@@ -722,6 +722,77 @@ body::before {
   letter-spacing: 2px;
 }
 
+/* ========== MODAL CONTINENTE COMPLETADO ========== */
+#continent-complete-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  z-index: 3000;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(5px);
+  padding: 20px;
+}
+#continent-complete-overlay.visible { display: flex; }
+#continent-complete-box {
+  background: linear-gradient(160deg, #122040, #1A2A50);
+  border: 2px solid rgba(255,215,0,0.45);
+  border-radius: 22px;
+  padding: 32px 28px;
+  max-width: 380px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  animation: modal-in .4s cubic-bezier(.34,1.56,.64,1);
+  text-align: center;
+}
+#cc-trophy { font-size: 56px; line-height: 1; }
+#cc-title {
+  font-family: 'Bangers', cursive;
+  font-size: 28px;
+  color: white;
+  letter-spacing: 3px;
+}
+#cc-continent-name {
+  font-family: 'Bangers', cursive;
+  font-size: 36px;
+  color: var(--gold);
+  letter-spacing: 4px;
+  text-shadow: 0 0 20px rgba(255,215,0,0.5);
+}
+#cc-subtitle {
+  font-size: 15px;
+  color: rgba(255,255,255,0.6);
+  letter-spacing: 1px;
+  margin-top: 4px;
+}
+#cc-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  margin-top: 8px;
+}
+#cc-buttons .btn {
+  width: 100%;
+  font-size: 20px;
+  padding: 12px;
+}
+
+/* Completed continent in screen5 */
+.continent-option.completed {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.continent-option.completed:hover {
+  background: rgba(255,255,255,0.07) !important;
+  border-color: rgba(255,255,255,0.12) !important;
+}
+
 /* ========== SCREEN 5: Elegir Continentes ========== */
 #screen5 { gap: 20px; }
 #screen5 h2 {
