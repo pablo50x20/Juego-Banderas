@@ -265,18 +265,11 @@ function playFromPool(continentList) {
   const unplayed = all.filter(x => savedScores[scoreKey(x.continent, x.key)] === undefined);
   if (unplayed.length === 0) {
     if (filteredMode) {
-      // Check if a single continent was selected and just completed
-      const completedNow = [...selectedContinents].find(c => isContinentCompleted(c));
-      if (completedNow) {
-        showContinentCompleteModal(completedNow);
-      } else {
-        showToast('🏆 ¡Completaste todos los países seleccionados!');
-        goScreen(4);
-      }
+      showToast('🏆 ¡Completaste todos los países seleccionados!');
     } else {
       showToast('🏆 ¡Completaste todas las banderas!');
-      goScreen(4);
     }
+    goScreen(4);
     return;
   }
   const pick = unplayed[Math.floor(Math.random() * unplayed.length)];
@@ -308,6 +301,7 @@ function loadRound(continent, countryKey) {
   document.getElementById('btn-stop').disabled  = false;
   document.getElementById('btn-guess').disabled = false;
   document.getElementById('screen3').classList.remove('guess-mode');
+  document.getElementById('screen3').style.paddingBottom = '';
   resetQwertyKeys();
   startBrightAnimation();
   goScreen(3);
@@ -463,8 +457,10 @@ function handleGoodJoker() {
   if (remaining.length === 0) return;
   const pick = remaining[Math.floor(Math.random() * remaining.length)];
   addCorrectLetter(pick);
-  showToast('⭐ ¡Comodín Bueno! La letra ' + pick + ' fue revelada');
   checkWin();
+  // Show popup with close button
+  document.getElementById('joker-letter').textContent = pick;
+  document.getElementById('joker-overlay').classList.add('visible');
 }
 
 function changeScore(delta) {
@@ -481,9 +477,6 @@ function buildNameBoxes() {
   const words = currentGameName.split(' ');
   // Count only real letters (exclude hyphen and space)
   const totalLetters = currentGameName.replace(/[ -]/g, '').length;
-
-  // Size class based on total letters
-  const sizeClass = totalLetters >= 16 ? 'size-sm' : totalLetters >= 12 ? 'size-md' : '';
 
   // Multi-line: total letters >= 10 AND more than one word (split by space)
   const multiLine = totalLetters >= 10 && words.length > 1;
@@ -525,9 +518,18 @@ function buildNameBoxes() {
 
   const lineGroups = multiLine ? splitIntoLines(words) : [currentGameName];
 
+  // Calculate dynamic box size based on longest line
+  const maxLineLetters = lineGroups.reduce((max, line) => {
+    const l = line.replace(/[ -]/g, '').length;
+    return l > max ? l : max;
+  }, 0);
+  const availableWidth = Math.min(window.innerWidth - 40, 520);
+  const gaps = (maxLineLetters - 1) * 4;
+  const boxSize = Math.max(20, Math.min(38, Math.floor((availableWidth - gaps) / maxLineLetters)));
+
   lineGroups.forEach(lineText => {
     const group = document.createElement('div');
-    group.className = 'word-group' + (sizeClass ? ' ' + sizeClass : '');
+    group.className = 'word-group';
     for (const c of lineText) {
       if (c === ' ') {
         const sp = document.createElement('div');
@@ -536,11 +538,13 @@ function buildNameBoxes() {
       } else if (c === '-') {
         const hyph = document.createElement('div');
         hyph.className = 'letter-box hyphen';
+        hyph.style.cssText = `width:${boxSize}px;height:${boxSize}px;font-size:${Math.round(boxSize*0.6)}px`;
         hyph.textContent = '-';
         group.appendChild(hyph);
       } else {
         const box = document.createElement('div');
         box.className = 'letter-box';
+        box.style.cssText = `width:${boxSize}px;height:${boxSize}px;font-size:${Math.round(boxSize*0.6)}px`;
         group.appendChild(box);
       }
     }
@@ -576,6 +580,11 @@ function enterGuessMode() {
   document.getElementById('letter-panel').classList.remove('visible');
   document.getElementById('qwerty-panel').classList.add('visible');
   document.getElementById('screen3').classList.add('guess-mode');
+  // Add bottom padding so content isn't hidden behind fixed qwerty
+  setTimeout(() => {
+    const qh = document.getElementById('qwerty-panel').offsetHeight;
+    document.getElementById('screen3').style.paddingBottom = qh + 'px';
+  }, 50);
 }
 
 function buildQwerty() {

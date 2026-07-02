@@ -1,196 +1,925 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>QuizBanderas</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
+@import url('https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@400;600;700;800;900&display=swap');
 
-  <!-- SOUND BAR (fijo, visible en todas las pantallas excepto pantalla 1) -->
-  <div id="sound-bar" style="display:none">
-    <button class="sound-btn" id="btn-music" title="Música">🎵</button>
-    <button class="sound-btn" id="btn-sfx"   title="Sonidos">🔔</button>
-  </div>
+:root {
+  --gold: #FFD700;
+  --gold-bright: #FFF176;
+  --navy: #0A1628;
+  --navy2: #122040;
+  --blue: #1565C0;
+  --blue-light: #1E88E5;
+  --red: #E53935;
+  --green: #43A047;
+  --white: #F5F5F5;
+  --gray: #90A4AE;
+  --block-normal: #B0BEC5;
+  --block-bright: #FFD700;
+}
 
-  <!-- TOAST de notificaciones -->
-  <div id="toast"></div>
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
-  <!-- MODAL de victoria -->
-  <div id="modal-overlay">
-    <div id="modal-box">
-      <img id="modal-flag" src="" alt="Bandera">
-      <div id="modal-country"></div>
-      <div id="modal-score">Puntaje: <span id="modal-score-val">0</span></div>
-      <div id="modal-buttons">
-        <button class="btn btn-primary" onclick="nextFlag()">Siguiente Bandera &#9654;</button>
-        <button class="btn btn-outline" onclick="document.getElementById('modal-overlay').classList.remove('visible'); goScreen(4)">Ver Etapas</button>
-      </div>
-    </div>
-  </div>
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--navy);
+  color: var(--white);
+  min-height: 100vh;
+  overflow: hidden;
+}
 
-  <!-- ========== PANTALLA 1: Bienvenida ========== -->
-  <div id="screen1" class="screen active">
-    <div class="title">&#127757; QuizBanderas</div>
-    <div class="subtitle">&#191;Conoces las banderas del mundo?</div>
+/* ========== SCREENS ========== */
+.screen {
+  display: none;
+  width: 100vw;
+  height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0; left: 0;
+  background: linear-gradient(160deg, #0A1628 0%, #122040 60%, #1A2A50 100%);
+}
+.screen.active { display: flex; }
 
-    <button class="btn btn-primary"
-            onclick="goScreen(2)"
-            style="font-size:30px; padding:16px 60px; margin-top:8px;">
-      INICIAR JUEGO
-    </button>
+/* Stars background */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(1px 1px at 30% 40%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 55% 20%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(1px 1px at 75% 60%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 90% 10%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(1px 1px at 20% 80%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 65% 85%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 45% 55%, rgba(255,255,255,0.2) 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 0;
+}
 
-    <div style="display:flex; gap:16px; margin-top:8px;">
-      <button class="sound-btn" id="s1-music" onclick="toggleMusic()">&#127925; Música: ON</button>
-      <button class="sound-btn" id="s1-sfx"   onclick="toggleSFX()">&#128276; Sonidos: ON</button>
-    </div>
+.screen > * { position: relative; z-index: 1; }
 
-    <img id="logo-img" src="" alt="Logo">
-  </div>
+/* ========== SOUND BAR ========== */
+#sound-bar {
+  position: fixed;
+  top: 14px; right: 18px;
+  display: flex; gap: 8px;
+  z-index: 1000;
+}
+.sound-btn {
+  background: rgba(255,255,255,0.1);
+  border: 1.5px solid rgba(255,255,255,0.25);
+  border-radius: 20px;
+  color: var(--white);
+  font-size: 18px;
+  padding: 5px 12px;
+  cursor: pointer;
+  transition: all .2s;
+  backdrop-filter: blur(6px);
+}
+.sound-btn:hover { background: rgba(255,215,0,0.2); border-color: var(--gold); }
+.sound-btn.off { opacity: 0.4; }
 
-  <!-- ========== PANTALLA 2: Menú principal ========== -->
-  <div id="screen2" class="screen">
-    <h2>&#127942; MENÚ PRINCIPAL</h2>
-    <button class="btn btn-primary"   onclick="startGame()" style="width:300px;">&#127918; JUGAR</button>
-    <button class="btn btn-secondary" onclick="goScreen(5)" style="width:300px;">&#127758; ELEGIR CONTINENTES</button>
-    <button class="btn btn-secondary" onclick="goScreen(4)" style="width:300px;">&#128203; ETAPAS</button>
-    <button class="btn btn-outline"   onclick="goScreen(1)" style="width:300px;">&#128682; SALIR</button>
-  </div>
+/* ========== BUTTONS ========== */
+.btn {
+  font-family: 'Bangers', cursive;
+  font-size: 26px;
+  letter-spacing: 2px;
+  padding: 14px 48px;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: transform .15s, box-shadow .15s;
+  text-transform: uppercase;
+}
+.btn:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+.btn:active { transform: translateY(0); }
 
-  <!-- ========== PANTALLA 3: Juego ========== -->
-  <div id="screen3" class="screen">
+.btn-primary {
+  background: linear-gradient(135deg, var(--gold), #FFA000);
+  color: var(--navy);
+  box-shadow: 0 4px 16px rgba(255,160,0,0.4);
+}
+.btn-secondary {
+  background: linear-gradient(135deg, var(--blue-light), var(--blue));
+  color: white;
+  box-shadow: 0 4px 16px rgba(21,101,192,0.4);
+}
+.btn-danger {
+  background: linear-gradient(135deg, #EF5350, var(--red));
+  color: white;
+  box-shadow: 0 4px 16px rgba(229,57,53,0.4);
+}
+.btn-outline {
+  background: transparent;
+  border: 2px solid rgba(255,255,255,0.4);
+  color: var(--white);
+}
+.btn-outline:hover { border-color: var(--gold); color: var(--gold); }
 
-    <!-- Barra de puntaje -->
-    <div id="score-bar">
-      <div>
-        <div id="score-label">PUNTAJE</div>
-        <div id="score-display">1000</div>
-      </div>
-    </div>
+/* ========== SCREEN 1 ========== */
+#screen1 { gap: 32px; }
+#screen1 .title {
+  font-family: 'Bangers', cursive;
+  font-size: clamp(52px, 9vw, 90px);
+  letter-spacing: 6px;
+  color: var(--gold);
+  text-shadow: 0 0 40px rgba(255,215,0,0.5), 4px 4px 0 rgba(0,0,0,0.4);
+  animation: pulse-glow 2.5s ease-in-out infinite;
+}
+@keyframes pulse-glow {
+  0%,100% { text-shadow: 0 0 30px rgba(255,215,0,0.4), 4px 4px 0 rgba(0,0,0,0.4); }
+  50% { text-shadow: 0 0 60px rgba(255,215,0,0.8), 4px 4px 0 rgba(0,0,0,0.4); }
+}
+#screen1 .subtitle {
+  font-size: 18px;
+  color: rgba(255,255,255,0.6);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-top: -20px;
+}
+#logo-img {
+  max-width: 180px;
+  max-height: 90px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
+  border-radius: 10px;
+}
 
-    <!-- Continente del país -->
-    <div id="continent-label">País de <span id="continent-label-value"></span></div>
+/* ========== SCREEN 2 ========== */
+#screen2 { gap: 20px; }
+#screen2 h2 {
+  font-family: 'Bangers', cursive;
+  font-size: 42px;
+  letter-spacing: 4px;
+  color: var(--gold);
+  margin-bottom: 16px;
+}
+#screen2 .btn { min-width: 240px; margin: 6px; }
 
-    <!-- Bandera con bloques encima -->
-    <div id="flag-area">
-      <div id="flag-wrapper">
-        <img id="flag-img" src="" alt="Bandera">
-        <div id="blocks-overlay"></div>
-      </div>
-    </div>
+/* ========== SCREEN 3 ========== */
+#screen3 {
+  justify-content: flex-start;
+  padding: 4px 16px;
+  gap: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+#screen3.guess-mode {
+  overflow-y: auto;
+}
 
-    <!-- Cuadros del nombre del país -->
-    <div id="name-area">
-      <div id="name-boxes"></div>
-    </div>
+/* Score bar */
+#score-bar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 10px 0;
+  flex-shrink: 0;
+}
+#score-display {
+  font-family: 'Bangers', cursive;
+  font-size: 32px;
+  color: var(--gold);
+  letter-spacing: 3px;
+  text-shadow: 0 0 20px rgba(255,215,0,0.4);
+  text-align: center;
+}
+#score-label { font-size: 13px; color: rgba(255,255,255,0.5); letter-spacing: 2px; text-align: center; }
+/* Continent label between score and flag */
+#continent-label {
+  text-align: center;
+  font-size: 13px;
+  color: rgba(255,255,255,0.55);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+  padding: 0;
+  line-height: 1.1;
+}
+#continent-label span {
+  display: block;
+  font-family: 'Bangers', cursive;
+  font-size: 26px;
+  color: var(--gold);
+  letter-spacing: 4px;
+  text-shadow: 0 0 16px rgba(255,215,0,0.35);
+}
+.score-hit { animation: score-flash .4s; }
+@keyframes score-flash {
+  0%,100% { color: var(--gold); }
+  50% { color: var(--red); transform: scale(1.15); }
+}
 
-    <!-- Letras descartadas -->
-    <div id="discarded-area">
-      <div id="discarded-label">Letras descartadas:</div>
-      <div id="discarded-letters"></div>
-    </div>
+/* Flag area — no crezca, solo ocupa lo que necesita */
+#flag-area {
+  position: relative;
+  width: 100%;
+  flex: 0 0 auto;
+  max-height: 45vh;
+  margin: 4px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+/* Wrapper shrinks to exact image size — blocks overlay matches perfectly */
+#flag-wrapper {
+  position: relative;
+  display: inline-block;
+  max-width: 560px;
+  max-height: 45vh;
+  line-height: 0;
+}
+#flag-img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(560px, 100vw - 32px);
+  max-height: 45vh;
+  border-radius: 8px;
+  border: 2px solid rgba(255,255,255,0.15);
+}
+@media (max-width: 600px) {
+  #flag-wrapper { max-width: calc(100vw - 32px); }
+  #flag-img { width: calc(100vw - 32px); height: auto; max-height: 45vh; }
+}
+#blocks-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  gap: 0;
+}
+.block {
+  background: var(--block-normal);
+  border-radius: 0;
+  border: 0.5px solid rgba(0,0,0,0.55);
+  transition: background .1s;
+  cursor: default;
+}
+.block.bright { background: var(--block-bright); box-shadow: 0 0 10px rgba(255,215,0,0.7); }
+.block.hidden { background: transparent !important; box-shadow: none !important; }
 
-    <!-- Botones STOP y Quiero Adivinar -->
-    <div id="action-row">
-      <button id="btn-stop"  onclick="pressStop()">&#128721; STOP</button>
-      <button id="btn-guess" onclick="enterGuessMode()">&#129300; Quiero Adivinar</button>
-    </div>
+/* Stop + guess row */
+#action-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 0 4px;
+  flex-shrink: 0;
+}
+#btn-stop {
+  font-family: 'Bangers', cursive;
+  font-size: 26px;
+  letter-spacing: 3px;
+  padding: 10px 40px;
+  background: linear-gradient(135deg, #E53935, #B71C1C);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  box-shadow: 0 4px 18px rgba(229,57,53,0.5);
+  transition: transform .15s, box-shadow .15s;
+  animation: stop-pulse 1s ease-in-out infinite;
+}
+@keyframes stop-pulse {
+  0%,100% { box-shadow: 0 4px 18px rgba(229,57,53,0.5); }
+  50% { box-shadow: 0 4px 30px rgba(229,57,53,0.9); }
+}
+#btn-stop:disabled { animation: none; opacity: 0.5; cursor: default; }
+#btn-guess {
+  font-family: 'Bangers', cursive;
+  font-size: 20px;
+  letter-spacing: 2px;
+  padding: 10px 24px;
+  background: linear-gradient(135deg, #7B1FA2, #4A148C);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(123,31,162,0.5);
+  transition: transform .15s;
+}
+#btn-guess:hover { transform: translateY(-2px); }
+#btn-guess:disabled { opacity: 0.4; cursor: default; transform: none; }
 
-    <!-- Popup panel pregunta SÍ / NO -->
-    <div id="letter-panel">
-      <div id="letter-popup">
-        <div id="revealed-letter">A</div>
-        <div id="letter-question">&#191;Esta letra pertenece al nombre del país?</div>
-        <div id="yesno-row">
-          <button class="btn-yesno" id="btn-yes" onclick="answerYesNo(true)">&#9989; SÍ</button>
-          <button class="btn-yesno" id="btn-no"  onclick="answerYesNo(false)">&#10060; NO</button>
-        </div>
-      </div>
-    </div>
+/* Letter popup modal */
+#letter-panel {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1500;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 12px;
+}
+#letter-panel.visible { display: flex; }
+#letter-popup {
+  background: linear-gradient(160deg, #122040, #1A2A50);
+  border: 2px solid rgba(255,215,0,0.45);
+  border-radius: 18px 18px 14px 14px;
+  padding: 18px 36px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 -6px 32px rgba(0,0,0,0.5);
+  animation: modal-in .25s cubic-bezier(.34,1.56,.64,1);
+  min-width: 260px;
+  width: 90vw;
+  max-width: 420px;
+}
+#revealed-letter {
+  font-family: 'Bangers', cursive;
+  font-size: 72px;
+  color: var(--gold);
+  letter-spacing: 6px;
+  line-height: 1;
+  text-shadow: 0 0 30px rgba(255,215,0,0.5);
+}
+#letter-question { font-size: 15px; color: rgba(255,255,255,0.85); text-align: center; }
+#yesno-row { display: flex; gap: 16px; margin-top: 4px; }
+.btn-yesno {
+  font-family: 'Bangers', cursive;
+  font-size: 24px;
+  letter-spacing: 2px;
+  padding: 10px 36px;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: transform .15s;
+}
+.btn-yesno:hover { transform: translateY(-2px); }
+#btn-yes { background: linear-gradient(135deg, #43A047, #1B5E20); color: white; box-shadow: 0 3px 12px rgba(67,160,71,0.5); }
+#btn-no  { background: linear-gradient(135deg, #E53935, #B71C1C); color: white; box-shadow: 0 3px 12px rgba(229,57,53,0.5); }
 
-    <!-- Teclado QWERTY (modo adivinar) -->
-    <div id="qwerty-panel">
-      <div class="qwerty-row" id="qrow1"></div>
-      <div class="qwerty-row" id="qrow2"></div>
-      <div class="qwerty-row" id="qrow3"></div>
-    </div>
+/* Country name boxes */
+#name-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 1px 0 0;
+  width: 100%;
+}
+#name-boxes {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+.word-group {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+}
+.letter-box {
+  width: 38px; height: 38px;
+  border: 2px solid rgba(255,255,255,0.4);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Bangers', cursive;
+  font-size: 23px;
+  letter-spacing: 1px;
+  background: rgba(255,255,255,0.07);
+  transition: background .3s;
+}
 
-  </div>
+.letter-box.correct { background: var(--green); border-color: var(--green); }
+.letter-box.wrong   { background: var(--red);   border-color: var(--red); }
+.letter-box.hyphen  { background: transparent; border-color: rgba(255,255,255,0.25); color: rgba(255,255,255,0.6); cursor: default; }
+.word-space { width: 10px; flex-shrink: 0; }
 
-  <!-- ========== PANTALLA 4: Resumen etapas ========== -->
-  <div id="screen4" class="screen">
-    <h2>&#128203; RESUMEN ETAPAS</h2>
+#discarded-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  flex-shrink: 0;
+  padding: 6px 8px 2px;
+}
+#discarded-label {
+  font-size: 12px;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+#discarded-letters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  justify-content: center;
+  min-height: 22px;
+  max-height: 58px;
+  overflow: hidden;
+}
+.disc-letter {
+  font-family: 'Bangers', cursive;
+  font-size: 17px;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+.disc-letter.green { background: rgba(67,160,71,0.25);  color: #81C784; border: 1px solid #43A047; }
+.disc-letter.red   { background: rgba(229,57,53,0.25); color: #EF9A9A; border: 1px solid #E53935; }
 
-    <div id="continent-nav">
-      <button class="nav-arrow" onclick="changeContinent(-1)">&#9664;</button>
-      <div id="continent-info">
-        <div id="continent-name">AMERICA</div>
-        <div id="continent-progress"></div>
-      </div>
-      <button class="nav-arrow" onclick="changeContinent(1)">&#9654;</button>
-    </div>
+/* QWERTY keyboard */
+#qwerty-panel {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 4px 8px;
+  flex-shrink: 0;
+  width: 100%;
+  box-sizing: border-box;
+  background: linear-gradient(160deg, #0A1628 0%, #122040 100%);
+  border-top: 1px solid rgba(255,255,255,0.1);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  padding-bottom: max(8px, env(safe-area-inset-bottom));
+}
+#qwerty-panel.visible { display: flex; }
+/* Row fills full width, keys expand equally */
+.qwerty-row { display: flex; gap: 3px; justify-content: center; width: 100%; padding: 0 4px; box-sizing: border-box; }
+.qkey {
+  font-family: 'Bangers', cursive;
+  font-size: clamp(14px, 4vw, 22px);
+  flex: 1;
+  max-width: 48px;
+  height: clamp(40px, 11vw, 52px);
+  border-radius: 7px;
+  border: none;
+  background: rgba(255,255,255,0.18);
+  color: white;
+  cursor: pointer;
+  transition: transform .1s, background .15s;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 3px 0 rgba(0,0,0,0.3);
+}
+.qkey:hover:not(:disabled) { background: rgba(255,215,0,0.3); transform: translateY(-2px); }
+.qkey:disabled { opacity: 0.3; cursor: default; transform: none; }
+.qkey.used-correct { background: rgba(67,160,71,0.5);  color: #81C784; }
+.qkey.used-wrong   { background: rgba(229,57,53,0.3); color: #EF9A9A; }
 
-    <div id="countries-list"></div>
+/* ========== VICTORY MODAL ========== */
+#modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+#modal-overlay.visible { display: flex; }
+#modal-box {
+  background: linear-gradient(160deg, #122040, #1A2A50);
+  border: 2px solid rgba(255,215,0,0.4);
+  border-radius: 20px;
+  padding: 32px;
+  max-width: 400px;
+  width: 90vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  animation: modal-in .4s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes modal-in {
+  from { transform: scale(0.7); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+#modal-flag { max-width: 260px; border-radius: 8px; border: 2px solid rgba(255,255,255,0.2); }
+#modal-country {
+  font-family: 'Bangers', cursive;
+  font-size: 38px;
+  color: var(--gold);
+  letter-spacing: 4px;
+  text-align: center;
+}
+#modal-score {
+  font-family: 'Bangers', cursive;
+  font-size: 28px;
+  color: white;
+  letter-spacing: 2px;
+}
+#modal-score span { color: var(--gold); }
+#modal-buttons { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
 
-    <div id="screen4-buttons">
-      <button class="btn btn-primary" onclick="nextRound()">&#127918; Jugar Siguiente Bandera</button>
-      <button class="btn btn-outline" onclick="goScreen(2)">&#8617; Salir</button>
-    </div>
-  </div>
+/* ========== SCREEN 4 ========== */
+#screen4 {
+  justify-content: flex-start;
+  padding: 24px 16px;
+  gap: 16px;
+}
+#screen4 h2 {
+  font-family: 'Bangers', cursive;
+  font-size: 38px;
+  color: var(--gold);
+  letter-spacing: 4px;
+}
+#continent-nav {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+#continent-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 180px;
+}
+#continent-name {
+  font-family: 'Bangers', cursive;
+  font-size: 28px;
+  color: white;
+  letter-spacing: 3px;
+  text-align: center;
+}
+#continent-progress {
+  font-size: 13px;
+  color: var(--gold);
+  letter-spacing: 1px;
+  margin-top: 2px;
+}
+.nav-arrow {
+  font-size: 28px;
+  background: rgba(255,255,255,0.1);
+  border: 1.5px solid rgba(255,255,255,0.25);
+  color: white;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .2s;
+}
+.nav-arrow:hover { background: rgba(255,215,0,0.2); border-color: var(--gold); }
 
-  <!-- MODAL INFO DE PAÍS -->
-  <div id="country-info-overlay">
-    <div id="country-info-box">
-      <button id="country-info-close" onclick="closeCountryInfo()">&#10005;</button>
-      <img id="ci-flag" src="" alt="Bandera">
-      <div id="ci-name"></div>
-      <div id="ci-data">
-        <div class="ci-row"><span class="ci-label">&#127968; Capital</span><span class="ci-value" id="ci-capital"></span></div>
-        <div class="ci-row"><span class="ci-label">&#128172; Idioma oficial</span><span class="ci-value" id="ci-idioma"></span></div>
-        <div class="ci-row"><span class="ci-label">&#128506; Superficie</span><span class="ci-value" id="ci-superficie"></span></div>
-        <div class="ci-row"><span class="ci-label">&#128101; Población</span><span class="ci-value" id="ci-poblacion"></span></div>
-        <div class="ci-row"><span class="ci-label">&#128176; Moneda</span><span class="ci-value" id="ci-moneda"></span></div>
-        <div class="ci-row"><span class="ci-label">&#128222; Prefijo</span><span class="ci-value" id="ci-prefijo"></span></div>
-      </div>
-      <div id="ci-score-row">Puntaje obtenido: <span id="ci-score"></span></div>
-    </div>
-  </div>
+#countries-list {
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+  max-height: 46vh;
+  padding-right: 4px;
+}
+.country-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 10px;
+  padding: 10px 18px;
+  font-size: 16px;
+  font-weight: 700;
+  transition: background .2s;
+}
+.country-row.played {
+  cursor: pointer;
+}
+.country-row.played:hover { background: rgba(255,215,0,0.12); border-color: rgba(255,215,0,0.3); }
+.country-row.locked {
+  opacity: 0.5;
+}
+.country-row .c-num     { color: rgba(255,255,255,0.4); font-size: 13px; margin-right: 10px; }
+.country-row .c-name    { flex: 1; }
+.country-row .c-score   { color: var(--gold); font-family: 'Bangers', cursive; font-size: 20px; letter-spacing: 1px; }
+.country-row .c-lock    { font-size: 18px; color: rgba(255,255,255,0.3); }
+#screen4-buttons { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 8px; }
 
-  <!-- ========== PANTALLA 5: Elegir Continentes ========== -->
-  <div id="screen5" class="screen">
-    <h2>&#127758; ELEGIR CONTINENTES</h2>
-    <p id="s5-hint">Selecciona uno o más continentes para jugar</p>
-    <div id="s5-top-actions">
-      <button class="btn-text-action" onclick="selectAllContinents()">&#9989; Seleccionar todo</button>
-      <button class="btn-text-action" onclick="clearAllContinents()">&#10060; Borrar todo</button>
-    </div>
-    <div id="continent-checkboxes"></div>
-    <div id="screen5-buttons">
-      <button class="btn btn-primary" onclick="startGameFiltered()">&#127918; JUGAR</button>
-      <button class="btn btn-outline" onclick="goScreen(2)">&#8617; SALIR</button>
-    </div>
-  </div>
+/* Toast */
+#toast {
+  position: fixed;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%) translateY(30px);
+  background: rgba(255,215,0,0.95);
+  color: var(--navy);
+  font-family: 'Bangers', cursive;
+  font-size: 22px;
+  letter-spacing: 2px;
+  padding: 10px 28px;
+  border-radius: 50px;
+  opacity: 0;
+  transition: opacity .3s, transform .3s;
+  z-index: 3000;
+  pointer-events: none;
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-  <!-- MODAL CONTINENTE COMPLETADO -->
-  <div id="continent-complete-overlay">
-    <div id="continent-complete-box">
-      <div id="cc-trophy">&#127942;</div>
-      <div id="cc-title">&#161;Completaste</div>
-      <div id="cc-continent-name"></div>
-      <div id="cc-subtitle">&#191;Qué deseas hacer ahora?</div>
-      <div id="cc-buttons">
-        <button class="btn btn-secondary" onclick="ccChooseContinent()">&#127758; Elegir otro continente</button>
-        <button class="btn btn-primary"   onclick="ccRandomFlag()">&#127922; Bandera al Azar</button>
-        <button class="btn btn-outline"   onclick="ccExit()">&#128682; Salir</button>
-      </div>
-    </div>
-  </div>
+/* ========== MODAL INFO DE PAÍS ========== */
+#country-info-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.78);
+  z-index: 2500;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+  padding: 16px;
+}
+#country-info-overlay.visible { display: flex; }
+#country-info-box {
+  background: linear-gradient(160deg, #0e1e3a, #162d55);
+  border: 2px solid rgba(255,215,0,0.35);
+  border-radius: 20px;
+  padding: 24px 22px 20px;
+  max-width: 420px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  animation: modal-in .35s cubic-bezier(.34,1.56,.64,1);
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+#country-info-close {
+  position: absolute;
+  top: 12px; right: 14px;
+  background: rgba(255,255,255,0.1);
+  border: none;
+  color: rgba(255,255,255,0.7);
+  font-size: 18px;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .2s;
+}
+#country-info-close:hover { background: rgba(229,57,53,0.5); color: white; }
+#ci-flag {
+  max-width: 220px;
+  max-height: 130px;
+  object-fit: contain;
+  border-radius: 8px;
+  border: 2px solid rgba(255,255,255,0.15);
+}
+#ci-name {
+  font-family: 'Bangers', cursive;
+  font-size: 32px;
+  color: var(--gold);
+  letter-spacing: 3px;
+  text-align: center;
+  line-height: 1.1;
+}
+#ci-data {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.ci-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 10px;
+  padding: 8px 12px;
+}
+.ci-label {
+  font-size: 12px;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  min-width: 120px;
+  flex-shrink: 0;
+}
+.ci-value {
+  font-size: 14px;
+  color: var(--white);
+  font-weight: 700;
+  text-align: right;
+  flex: 1;
+}
+#ci-score-row {
+  font-size: 14px;
+  color: rgba(255,255,255,0.55);
+  letter-spacing: 1px;
+}
+#ci-score-row span {
+  font-family: 'Bangers', cursive;
+  font-size: 22px;
+  color: var(--gold);
+  letter-spacing: 2px;
+}
 
-  <!-- Scripts -->
-  <script src="images_data.js"></script>
-  <script src="countries_data.js"></script>
-  <script src="game.js"></script>
+/* ========== MODAL COMODÍN BUENO ========== */
+#joker-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 2800;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+#joker-overlay.visible { display: flex; }
+#joker-box {
+  background: linear-gradient(160deg, #122040, #1A2A50);
+  border: 2px solid rgba(255,215,0,0.5);
+  border-radius: 20px;
+  padding: 28px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  animation: modal-in .3s cubic-bezier(.34,1.56,.64,1);
+  text-align: center;
+}
+#joker-star { font-size: 48px; line-height: 1; }
+#joker-title {
+  font-family: 'Bangers', cursive;
+  font-size: 30px;
+  color: var(--gold);
+  letter-spacing: 3px;
+}
+#joker-subtitle { font-size: 14px; color: rgba(255,255,255,0.6); }
+#joker-letter {
+  font-family: 'Bangers', cursive;
+  font-size: 72px;
+  color: var(--gold);
+  letter-spacing: 6px;
+  line-height: 1;
+  text-shadow: 0 0 30px rgba(255,215,0,0.6);
+}
+#joker-box .btn { margin-top: 8px; padding: 10px 40px; font-size: 20px; }
 
-</body>
-</html>
+/* ========== MODAL CONTINENTE COMPLETADO ========== */
+#continent-complete-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  z-index: 3000;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(5px);
+  padding: 20px;
+}
+#continent-complete-overlay.visible { display: flex; }
+#continent-complete-box {
+  background: linear-gradient(160deg, #122040, #1A2A50);
+  border: 2px solid rgba(255,215,0,0.45);
+  border-radius: 22px;
+  padding: 32px 28px;
+  max-width: 380px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  animation: modal-in .4s cubic-bezier(.34,1.56,.64,1);
+  text-align: center;
+}
+#cc-trophy { font-size: 56px; line-height: 1; }
+#cc-title {
+  font-family: 'Bangers', cursive;
+  font-size: 28px;
+  color: white;
+  letter-spacing: 3px;
+}
+#cc-continent-name {
+  font-family: 'Bangers', cursive;
+  font-size: 36px;
+  color: var(--gold);
+  letter-spacing: 4px;
+  text-shadow: 0 0 20px rgba(255,215,0,0.5);
+}
+#cc-subtitle {
+  font-size: 15px;
+  color: rgba(255,255,255,0.6);
+  letter-spacing: 1px;
+  margin-top: 4px;
+}
+#cc-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  margin-top: 8px;
+}
+#cc-buttons .btn {
+  width: 100%;
+  font-size: 20px;
+  padding: 12px;
+}
+
+/* Completed continent in screen5 */
+.continent-option.completed {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.continent-option.completed:hover {
+  background: rgba(255,255,255,0.07) !important;
+  border-color: rgba(255,255,255,0.12) !important;
+}
+
+/* ========== SCREEN 5: Elegir Continentes ========== */
+#screen5 { gap: 20px; }
+#screen5 h2 {
+  font-family: 'Bangers', cursive;
+  font-size: 38px;
+  color: var(--gold);
+  letter-spacing: 4px;
+}
+#s5-hint {
+  font-size: 15px;
+  color: rgba(255,255,255,0.6);
+  letter-spacing: 1px;
+  margin-top: -10px;
+}
+#continent-checkboxes {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 360px;
+}
+.continent-option {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(255,255,255,0.07);
+  border: 2px solid rgba(255,255,255,0.12);
+  border-radius: 12px;
+  padding: 14px 20px;
+  cursor: pointer;
+  transition: background .2s, border-color .2s;
+  user-select: none;
+}
+.continent-option:hover { background: rgba(255,215,0,0.1); border-color: rgba(255,215,0,0.4); }
+.continent-option.selected {
+  background: rgba(255,215,0,0.15);
+  border-color: var(--gold);
+}
+.continent-option .c-emoji { font-size: 26px; }
+.continent-option .c-label {
+  font-family: 'Bangers', cursive;
+  font-size: 22px;
+  letter-spacing: 2px;
+  flex: 1;
+}
+.continent-option .c-count {
+  font-size: 13px;
+  color: rgba(255,255,255,0.45);
+}
+.continent-option .c-check {
+  width: 24px; height: 24px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+  transition: background .2s, border-color .2s;
+}
+.continent-option.selected .c-check {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--navy);
+}
+#s5-top-actions {
+  display: flex;
+  gap: 20px;
+  margin-top: -8px;
+}
+.btn-text-action {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.7);
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: color .2s, background .2s;
+}
+.btn-text-action:hover { color: var(--gold); background: rgba(255,215,0,0.1); }
+#screen5-buttons { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; margin-top: 6px; }
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
