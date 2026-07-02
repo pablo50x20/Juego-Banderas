@@ -302,6 +302,7 @@ function loadRound(continent, countryKey) {
   document.getElementById('btn-guess').disabled = false;
   document.getElementById('screen3').classList.remove('guess-mode');
   document.getElementById('screen3').style.paddingBottom = '';
+  document.removeEventListener('keydown', handlePhysicalKey);
   resetQwertyKeys();
   startBrightAnimation();
   goScreen(3);
@@ -585,6 +586,20 @@ function enterGuessMode() {
     const qh = document.getElementById('qwerty-panel').offsetHeight;
     document.getElementById('screen3').style.paddingBottom = qh + 'px';
   }, 50);
+  // Enable physical keyboard input
+  document.addEventListener('keydown', handlePhysicalKey);
+}
+
+function handlePhysicalKey(e) {
+  if (!guessMode) return;
+  const letter = e.key.toUpperCase();
+  // Only handle single letters in the Spanish alphabet
+  if (!/^[A-ZÁÉÍÓÚÜÑ]$/.test(letter)) return;
+  // Normalize accented vowels to plain (game uses unaccented names)
+  const normalized = letter
+    .replace('Á','A').replace('É','E').replace('Í','I')
+    .replace('Ó','O').replace('Ú','U').replace('Ü','U');
+  pressQKey(normalized);
 }
 
 function buildQwerty() {
