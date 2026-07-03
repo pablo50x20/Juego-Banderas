@@ -210,39 +210,37 @@ let audioCtx = null;
 let noteBuffers = [];
 let errorBuffer = null;
 let audioReady = false;
+let audioDecoding = false;
 
-function initAudio() {
-  if (!window.AUDIO_DATA) return;
+function initAudio() {}  // setup happens on first user gesture
+
+function decodeBase64(src) {
+  const base64 = src.split(',')[1];
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return bytes.buffer;
 }
 
-function ensureAudioCtx() {
-  if (audioReady) return Promise.resolve();
-  return new Promise(async (resolve) => {
-    try {
-      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
-      const decodeOne = async (src) => {
-        // Convert data URL to ArrayBuffer directly
-        const base64 = src.split(',')[1];
-        const binary = atob(base64);
-        const bytes = new Uint8Array(binary.length);
-        for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-        return audioCtx.decodeAudioData(bytes.buffer);
-      };
-
-      noteBuffers = await Promise.all(AUDIO_DATA.notas.map(decodeOne));
-      errorBuffer = await decodeOne(AUDIO_DATA.error);
-      audioReady = true;
-      resolve();
-    } catch(e) {
-      resolve();
-    }
-  });
+async function setupAudio() {
+  if (audioReady || audioDecoding || !window.AUDIO_DATA) return;
+  audioDecoding = true;
+  try {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') await audioCtx.resume();
+    noteBuffers = await Promise.all(
+      AUDIO_DATA.notas.map(src => audioCtx.decodeAudioData(decodeBase64(src)))
+    );
+    errorBuffer = await audioCtx.decodeAudioData(decodeBase64(AUDIO_DATA.error));
+    audioReady = true;
+  } catch(e) {
+    audioDecoding = false;
+  }
 }
 
 function playBuffer(buffer) {
   if (!audioCtx || !buffer) return;
-  if (audioCtx.state === 'suspended') audioCtx.resume();
+  if (audioCtx.state === 'suspended') { audioCtx.resume().then(() => playBuffer(buffer)); return; }
   const src = audioCtx.createBufferSource();
   src.buffer = buffer;
   src.connect(audioCtx.destination);
@@ -251,7 +249,7 @@ function playBuffer(buffer) {
 
 async function playNote() {
   if (!sfxOn) return;
-  await ensureAudioCtx();
+  if (!audioReady) { await setupAudio(); }
   if (!audioReady) return;
   playBuffer(noteBuffers[noteIndex % noteBuffers.length]);
   noteIndex++;
@@ -259,15 +257,13 @@ async function playNote() {
 
 async function playError() {
   if (!sfxOn) return;
-  await ensureAudioCtx();
+  if (!audioReady) { await setupAudio(); }
   if (!audioReady) return;
   playBuffer(errorBuffer);
   noteIndex = 0;
 }
 
-function resetNotes() {
-  noteIndex = 0;
-}
+function resetNotes() { noteIndex = 0; }
 let selectedContinents = new Set(['AFRICA','AMERICA','ASIA','EUROPA','OCEANIA']); // todos por defecto
 let filteredMode = false; // true cuando se juega desde pantalla 5
 
@@ -291,6 +287,7 @@ function scoreKey(continent, country) { return continent + '/' + country; }
 
 // ========== NAVEGACIÓN ==========
 function goScreen(n) {
+  setupAudio();  // cada navegación es un gesto del usuario
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen' + n).classList.add('active');
   document.getElementById('sound-bar').style.display = (n === 1) ? 'none' : 'flex';
