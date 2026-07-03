@@ -205,35 +205,59 @@ let correctLetters = new Set(), wrongLetters = new Set();
 let savedScores = {};
 
 // ========== AUDIO ==========
-let noteIndex = 0;       // posición actual en la escala (0 = c3)
-let audioEnabled = true; // controlado por el botón de sonidos
-let noteAudios = [];     // Audio objects precargados
-let errorAudio = null;
+let noteIndex = 0;
+let audioCtx = null;
+let noteBuffers = [];
+let errorBuffer = null;
+let audioReady = false;
 
-function initAudio() {
+async function initAudio() {
   if (!window.AUDIO_DATA) return;
-  noteAudios = AUDIO_DATA.notas.map(src => {
-    const a = new Audio(src);
-    a.preload = 'auto';
-    return a;
-  });
-  errorAudio = new Audio(AUDIO_DATA.error);
-  errorAudio.preload = 'auto';
+  // AudioContext must be created after user gesture - defer until first interaction
+  document.addEventListener('click', unlockAudio, { once: true });
+  document.addEventListener('touchstart', unlockAudio, { once: true });
+}
+
+async function unlockAudio() {
+  if (audioReady) return;
+  try {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    // Decode all notes
+    noteBuffers = await Promise.all(
+      AUDIO_DATA.notas.map(src => fetchAndDecode(src))
+    );
+    errorBuffer = await fetchAndDecode(AUDIO_DATA.error);
+    audioReady = true;
+  } catch(e) {
+    console.warn('Audio init failed:', e);
+  }
+}
+
+async function fetchAndDecode(dataUrl) {
+  const res = await fetch(dataUrl);
+  const buf = await res.arrayBuffer();
+  return audioCtx.decodeAudioData(buf);
+}
+
+function playBuffer(buffer) {
+  if (!audioCtx || !buffer) return;
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  const src = audioCtx.createBufferSource();
+  src.buffer = buffer;
+  src.connect(audioCtx.destination);
+  src.start(0);
 }
 
 function playNote() {
-  if (!sfxOn || noteAudios.length === 0) return;
-  const audio = noteAudios[noteIndex % noteAudios.length];
-  audio.currentTime = 0;
-  audio.play().catch(() => {});
+  if (!sfxOn || !audioReady) return;
+  playBuffer(noteBuffers[noteIndex % noteBuffers.length]);
   noteIndex++;
 }
 
 function playError() {
-  if (!sfxOn || !errorAudio) return;
-  errorAudio.currentTime = 0;
-  errorAudio.play().catch(() => {});
-  noteIndex = 0; // reset escala al error
+  if (!sfxOn || !audioReady) return;
+  playBuffer(errorBuffer);
+  noteIndex = 0;
 }
 
 function resetNotes() {
