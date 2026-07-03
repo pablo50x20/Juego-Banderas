@@ -211,32 +211,37 @@ let noteBuffers = [];
 let errorBuffer = null;
 let audioReady = false;
 
-async function initAudio() {
-  if (!window.AUDIO_DATA) return;
-  // AudioContext must be created after user gesture - defer until first interaction
-  document.addEventListener('click', unlockAudio, { once: true });
-  document.addEventListener('touchstart', unlockAudio, { once: true });
+function initAudio() {
+  if (!window.AUDIO_DATA) { console.warn('AUDIO_DATA not found'); return; }
+  console.log('Audio system ready, waiting for user gesture...');
 }
 
-async function unlockAudio() {
-  if (audioReady) return;
-  try {
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    // Decode all notes
-    noteBuffers = await Promise.all(
-      AUDIO_DATA.notas.map(src => fetchAndDecode(src))
-    );
-    errorBuffer = await fetchAndDecode(AUDIO_DATA.error);
-    audioReady = true;
-  } catch(e) {
-    console.warn('Audio init failed:', e);
-  }
-}
+function ensureAudioCtx() {
+  if (audioReady) return Promise.resolve();
+  return new Promise(async (resolve) => {
+    try {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      console.log('AudioContext created, state:', audioCtx.state);
 
-async function fetchAndDecode(dataUrl) {
-  const res = await fetch(dataUrl);
-  const buf = await res.arrayBuffer();
-  return audioCtx.decodeAudioData(buf);
+      const decodeOne = async (src) => {
+        // Convert data URL to ArrayBuffer directly
+        const base64 = src.split(',')[1];
+        const binary = atob(base64);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+        return audioCtx.decodeAudioData(bytes.buffer);
+      };
+
+      noteBuffers = await Promise.all(AUDIO_DATA.notas.map(decodeOne));
+      errorBuffer = await decodeOne(AUDIO_DATA.error);
+      audioReady = true;
+      console.log('Audio decoded OK -', noteBuffers.length, 'notes');
+      resolve();
+    } catch(e) {
+      console.error('Audio init error:', e);
+      resolve();
+    }
+  });
 }
 
 function playBuffer(buffer) {
@@ -248,14 +253,18 @@ function playBuffer(buffer) {
   src.start(0);
 }
 
-function playNote() {
-  if (!sfxOn || !audioReady) return;
+async function playNote() {
+  if (!sfxOn) return;
+  await ensureAudioCtx();
+  if (!audioReady) return;
   playBuffer(noteBuffers[noteIndex % noteBuffers.length]);
   noteIndex++;
 }
 
-function playError() {
-  if (!sfxOn || !audioReady) return;
+async function playError() {
+  if (!sfxOn) return;
+  await ensureAudioCtx();
+  if (!audioReady) return;
   playBuffer(errorBuffer);
   noteIndex = 0;
 }
