@@ -203,6 +203,42 @@ let brightBlock = 0, brightInterval = null, animRunning = false;
 let waitingYesNo = false, currentRevealedLetter = '', guessMode = false;
 let correctLetters = new Set(), wrongLetters = new Set();
 let savedScores = {};
+
+// ========== AUDIO ==========
+let noteIndex = 0;       // posición actual en la escala (0 = c3)
+let audioEnabled = true; // controlado por el botón de sonidos
+let noteAudios = [];     // Audio objects precargados
+let errorAudio = null;
+
+function initAudio() {
+  if (!window.AUDIO_DATA) return;
+  noteAudios = AUDIO_DATA.notas.map(src => {
+    const a = new Audio(src);
+    a.preload = 'auto';
+    return a;
+  });
+  errorAudio = new Audio(AUDIO_DATA.error);
+  errorAudio.preload = 'auto';
+}
+
+function playNote() {
+  if (!sfxOn || noteAudios.length === 0) return;
+  const audio = noteAudios[noteIndex % noteAudios.length];
+  audio.currentTime = 0;
+  audio.play().catch(() => {});
+  noteIndex++;
+}
+
+function playError() {
+  if (!sfxOn || !errorAudio) return;
+  errorAudio.currentTime = 0;
+  errorAudio.play().catch(() => {});
+  noteIndex = 0; // reset escala al error
+}
+
+function resetNotes() {
+  noteIndex = 0;
+}
 let selectedContinents = new Set(['AFRICA','AMERICA','ASIA','EUROPA','OCEANIA']); // todos por defecto
 let filteredMode = false; // true cuando se juega desde pantalla 5
 
@@ -211,6 +247,7 @@ window.addEventListener('load', () => {
   loadSavedScores();
   document.getElementById('logo-img').src = IMAGES.LOGO;
   buildQwerty();
+  initAudio();
   goScreen(1);
   document.getElementById('btn-music').addEventListener('click', toggleMusic);
   document.getElementById('btn-sfx').addEventListener('click', toggleSFX);
@@ -288,6 +325,7 @@ function loadRound(continent, countryKey) {
   currentGameName   = GAME_NAMES[countryKey];
   score = 1000;
   correctLetters = new Set(); wrongLetters = new Set();
+  resetNotes();
   guessMode = false; waitingYesNo = false; currentRevealedLetter = '';
 
   document.getElementById('flag-img').src = IMAGES[continent][countryKey];
@@ -376,7 +414,7 @@ function pressStop() {
   const assignment = blockLetters[idx];
 
   if (assignment === 'GOOD') { addJokerBadge('⭐','green'); handleGoodJoker(); restartIfPossible(); return; }
-  if (assignment === 'BAD')  { addJokerBadge('💀','red'); changeScore(-100); showToast('💀 ¡Comodín Malo! -100 pts'); restartIfPossible(); return; }
+  if (assignment === 'BAD')  { addJokerBadge('💀','red'); changeScore(-100); playError(); showToast('💀 ¡Comodín Malo! -100 pts'); restartIfPossible(); return; }
   if (assignment === null)   { restartIfPossible(); return; }
 
   const letter = assignment;
@@ -422,6 +460,7 @@ function answerYesNo(userSaidYes) {
 // ========== LETRAS ==========
 function addCorrectLetter(letter, penalized = false) {
   correctLetters.add(letter);
+  if (!penalized) playNote(); else playError();
   const boxes = document.querySelectorAll('.word-group .letter-box:not(.hyphen)');
   let boxIdx = 0;
   for (let i = 0; i < currentGameName.length; i++) {
@@ -435,6 +474,7 @@ function addCorrectLetter(letter, penalized = false) {
 
 function addWrongLetter(letter, color) {
   wrongLetters.add(letter);
+  if (color === 'green') playNote(); else playError();
   const disc = document.getElementById('discarded-letters');
   const span = document.createElement('span');
   span.className = 'disc-letter ' + color;
@@ -777,5 +817,4 @@ function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg; t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2500);
-  
 }
