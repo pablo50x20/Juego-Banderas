@@ -212,8 +212,7 @@ let errorBuffer = null;
 let audioReady = false;
 
 function initAudio() {
-  if (!window.AUDIO_DATA) { console.warn('AUDIO_DATA not found'); return; }
-  console.log('Audio system ready, waiting for user gesture...');
+  if (!window.AUDIO_DATA) return;
 }
 
 function ensureAudioCtx() {
@@ -221,7 +220,6 @@ function ensureAudioCtx() {
   return new Promise(async (resolve) => {
     try {
       audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      console.log('AudioContext created, state:', audioCtx.state);
 
       const decodeOne = async (src) => {
         // Convert data URL to ArrayBuffer directly
@@ -235,10 +233,8 @@ function ensureAudioCtx() {
       noteBuffers = await Promise.all(AUDIO_DATA.notas.map(decodeOne));
       errorBuffer = await decodeOne(AUDIO_DATA.error);
       audioReady = true;
-      console.log('Audio decoded OK -', noteBuffers.length, 'notes');
       resolve();
     } catch(e) {
-      console.error('Audio init error:', e);
       resolve();
     }
   });
