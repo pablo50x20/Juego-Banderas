@@ -206,60 +206,32 @@ let savedScores = {};
 
 // ========== AUDIO ==========
 let noteIndex = 0;
-let audioCtx = null;
-let noteBuffers = [];
-let errorBuffer = null;
-let audioReady = false;
-let audioDecoding = false;
+let notaElements = [];
+let errorElement = null;
 
-function initAudio() {}  // setup happens on first user gesture
-
-function decodeBase64(src) {
-  const base64 = src.split(',')[1];
-  const binary = atob(base64);
-  const bytes = new Uint8Array(binary.length);
-  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-  return bytes.buffer;
-}
-
-async function setupAudio() {
-  if (audioReady || audioDecoding || !window.AUDIO_DATA) return;
-  audioDecoding = true;
-  try {
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    if (audioCtx.state === 'suspended') await audioCtx.resume();
-    noteBuffers = await Promise.all(
-      AUDIO_DATA.notas.map(src => audioCtx.decodeAudioData(decodeBase64(src)))
-    );
-    errorBuffer = await audioCtx.decodeAudioData(decodeBase64(AUDIO_DATA.error));
-    audioReady = true;
-  } catch(e) {
-    audioDecoding = false;
+function initAudio() {
+  notaElements = [];
+  for (let i = 1; i <= 21; i++) {
+    const el = document.getElementById('audio-nota' + String(i).padStart(2, '0'));
+    if (el) notaElements.push(el);
   }
+  errorElement = document.getElementById('audio-error');
 }
 
-function playBuffer(buffer) {
-  if (!audioCtx || !buffer) return;
-  if (audioCtx.state === 'suspended') { audioCtx.resume().then(() => playBuffer(buffer)); return; }
-  const src = audioCtx.createBufferSource();
-  src.buffer = buffer;
-  src.connect(audioCtx.destination);
-  src.start(0);
-}
+function setupAudio() {} // ya no es necesario, los <audio> se desbloquean con el primer play
 
-async function playNote() {
-  if (!sfxOn) return;
-  if (!audioReady) { await setupAudio(); }
-  if (!audioReady) return;
-  playBuffer(noteBuffers[noteIndex % noteBuffers.length]);
+function playNote() {
+  if (!sfxOn || notaElements.length === 0) return;
+  const el = notaElements[noteIndex % notaElements.length];
+  el.currentTime = 0;
+  el.play().catch(() => {});
   noteIndex++;
 }
 
-async function playError() {
-  if (!sfxOn) return;
-  if (!audioReady) { await setupAudio(); }
-  if (!audioReady) return;
-  playBuffer(errorBuffer);
+function playError() {
+  if (!sfxOn || !errorElement) return;
+  errorElement.currentTime = 0;
+  errorElement.play().catch(() => {});
   noteIndex = 0;
 }
 
