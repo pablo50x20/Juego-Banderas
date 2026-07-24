@@ -1,3 +1,71 @@
+// ============================================================
+//  CONFIGURACIÓN DEL MUNDO
+//  Todo lo que cambia de un mundo a otro vive aquí.
+//  Para crear un mundo nuevo: copiar este bloque y cambiar
+//  estos valores + los archivos de datos (images_data.js, etc.)
+// ============================================================
+const MUNDO = {
+  id: 'banderas',
+
+  // --- Identidad ---
+  tituloPagina: 'QuizBanderas',
+  titulo:       '\u{1F30D} QuizBanderas',
+  subtitulo:    '\u00BFConoces las banderas del mundo?',
+
+  // --- Almacenamiento (cambiar por mundo para no pisar progreso) ---
+  claveStorage: 'quizbanderas_scores',
+
+  // --- Funcionalidades opcionales ---
+  conAudio: true,   // notas musicales al acertar
+  conLogo:  true,   // logo en pantalla 1
+  conFicha: true,   // ficha de datos al tocar un item jugado
+
+  // --- Textos ---
+  // Se escriben completos (no se arman por partes) para evitar
+  // problemas de género y número en español.
+  textos: {
+    etiquetaCategoria:    'Pa\u00EDs de',
+    unidadItems:          'pa\u00EDses',
+    categoriaCompletada:  '\u2705 Completado',
+
+    menuElegirCategorias: '\u{1F30E} ELEGIR CONTINENTES',
+    tituloPantalla5:      '\u{1F30E} ELEGIR CONTINENTES',
+    hintPantalla5:        'Selecciona uno o m\u00E1s continentes para jugar',
+
+    preguntaLetra:        '\u00BFEsta letra pertenece al nombre del pa\u00EDs?',
+    botonSiguiente:       'Siguiente Bandera \u25B6',
+    botonJugarSiguiente:  '\u{1F3AE} Jugar Siguiente Bandera',
+    botonOtraCategoria:   '\u{1F30E} Elegir otro continente',
+
+    avisoElegirCategoria: '\u26A0\uFE0F Elige al menos un continente',
+    completasteSeleccion: '\u{1F3C6} \u00A1Completaste todos los pa\u00EDses seleccionados!',
+    completasteTodo:      '\u{1F3C6} \u00A1Completaste todas las banderas!'
+  }
+};
+
+// Aplica los textos del mundo al DOM (se llama al cargar)
+function aplicarTextosMundo() {
+  const t = MUNDO.textos;
+  const set = (sel, txt) => { const el = document.querySelector(sel); if (el) el.textContent = txt; };
+
+  document.title = MUNDO.tituloPagina;
+  set('#screen1 .title',    MUNDO.titulo);
+  set('#screen1 .subtitle', MUNDO.subtitulo);
+
+  // "País de [CONTINENTE]" — se reconstruye conservando el span
+  const lbl = document.getElementById('continent-label');
+  if (lbl) lbl.innerHTML = t.etiquetaCategoria + ' <span id="continent-label-value"></span>';
+
+  set('#letter-question', t.preguntaLetra);
+  set('#screen5 h2',      t.tituloPantalla5);
+  set('#s5-hint',         t.hintPantalla5);
+
+  set('#screen2 .btn-secondary',        t.menuElegirCategorias);
+  set('#modal-buttons .btn-primary',    t.botonSiguiente);
+  set('#screen4-buttons .btn-primary',  t.botonJugarSiguiente);
+  set('#cc-buttons .btn-secondary',     t.botonOtraCategoria);
+}
+
 // ========== GAME DATA ==========
 const CONTINENTS = ['AFRICA', 'AMERICA', 'ASIA', 'EUROPA', 'OCEANIA'];
 
@@ -221,7 +289,7 @@ function initAudio() {
 function setupAudio() {} // ya no es necesario, los <audio> se desbloquean con el primer play
 
 function playNote() {
-  if (!sfxOn || notaElements.length === 0) return;
+  if (!MUNDO.conAudio || !sfxOn || notaElements.length === 0) return;
   const el = notaElements[noteIndex % notaElements.length];
   el.currentTime = 0;
   el.play().catch(() => {});
@@ -229,7 +297,7 @@ function playNote() {
 }
 
 function playError() {
-  if (!sfxOn || !errorElement) return;
+  if (!MUNDO.conAudio || !sfxOn || !errorElement) return;
   errorElement.currentTime = 0;
   errorElement.play().catch(() => {});
   noteIndex = 0;
@@ -241,20 +309,27 @@ let filteredMode = false; // true cuando se juega desde pantalla 5
 
 // ========== INICIO ==========
 window.addEventListener('load', () => {
+  aplicarTextosMundo();
   loadSavedScores();
-  document.getElementById('logo-img').src = IMAGES.LOGO;
+
+  const logo = document.getElementById('logo-img');
+  if (logo) {
+    if (MUNDO.conLogo && window.IMAGES && IMAGES.LOGO) logo.src = IMAGES.LOGO;
+    else logo.style.display = 'none';
+  }
+
   buildQwerty();
-  initAudio();
+  if (MUNDO.conAudio) initAudio();
   goScreen(1);
   document.getElementById('btn-music').addEventListener('click', toggleMusic);
   document.getElementById('btn-sfx').addEventListener('click', toggleSFX);
 });
 
 function loadSavedScores() {
-  try { const s = localStorage.getItem('quizbanderas_scores'); if (s) savedScores = JSON.parse(s); }
+  try { const s = localStorage.getItem(MUNDO.claveStorage); if (s) savedScores = JSON.parse(s); }
   catch (e) { savedScores = {}; }
 }
-function saveScores() { localStorage.setItem('quizbanderas_scores', JSON.stringify(savedScores)); }
+function saveScores() { localStorage.setItem(MUNDO.claveStorage, JSON.stringify(savedScores)); }
 function scoreKey(continent, country) { return continent + '/' + country; }
 
 // ========== NAVEGACIÓN ==========
@@ -289,7 +364,7 @@ function isContinentCompleted(c) {
 }
 
 function startGameFiltered() {
-  if (selectedContinents.size === 0) { showToast('⚠️ Elige al menos un continente'); return; }
+  if (selectedContinents.size === 0) { showToast(MUNDO.textos.avisoElegirCategoria); return; }
   filteredMode = true;
   playFromPool([...selectedContinents]);
 }
@@ -300,9 +375,9 @@ function playFromPool(continentList) {
   const unplayed = all.filter(x => savedScores[scoreKey(x.continent, x.key)] === undefined);
   if (unplayed.length === 0) {
     if (filteredMode) {
-      showToast('🏆 ¡Completaste todos los países seleccionados!');
+      showToast(MUNDO.textos.completasteSeleccion);
     } else {
-      showToast('🏆 ¡Completaste todas las banderas!');
+      showToast(MUNDO.textos.completasteTodo);
     }
     goScreen(4);
     return;
@@ -703,7 +778,7 @@ function renderScreen5() {
     div.innerHTML = `
       <span class="c-emoji">${meta.emoji}</span>
       <span class="c-label">${meta.label}</span>
-      <span class="c-count">${completed ? '✅ Completado' : count + ' países'}</span>
+      <span class="c-count">${completed ? MUNDO.textos.categoriaCompletada : count + ' ' + MUNDO.textos.unidadItems}</span>
       <span class="c-check">${completed ? '🏆' : isSelected ? '✓' : ''}</span>
     `;
     if (!completed) div.addEventListener('click', () => toggleContinent(c));
@@ -734,7 +809,7 @@ function renderScreen4() {
   document.getElementById('continent-name').textContent = continent;
   const total = COUNTRIES[continent].length;
   const played = COUNTRIES[continent].filter(k => savedScores[scoreKey(continent, k)] !== undefined).length;
-  document.getElementById('continent-progress').textContent = played + ' / ' + total + ' países';
+  document.getElementById('continent-progress').textContent = played + ' / ' + total + ' ' + MUNDO.textos.unidadItems;
   const list = document.getElementById('countries-list');
   list.innerHTML = '';
   [...COUNTRIES[continent]].sort().forEach((k, idx) => {
@@ -757,7 +832,7 @@ function changeContinent(dir) {
   renderScreen4();
 }
 
-// Helper para botón "Jugar Siguiente Bandera" en pantalla 4
+// Helper para el botón "Jugar Siguiente" de pantalla 4
 function nextRound() {
   if (filteredMode) startGameFiltered();
   else startGame();
@@ -765,6 +840,7 @@ function nextRound() {
 
 // ========== INFO DE PAÍS ==========
 function showCountryInfo(countryKey, continent) {
+  if (!MUNDO.conFicha || !window.COUNTRY_INFO) return;
   const info = COUNTRY_INFO[countryKey];
   if (!info) return;
   document.getElementById('ci-flag').src     = IMAGES[continent][countryKey];
